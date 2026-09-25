@@ -1,0 +1,744 @@
+# =============================================================================
+# Huinsight demo AI-advisor seed content (Round 5 finding #3, Phase 3a)
+# =============================================================================
+# Consumed by tools/demo_data/seed_ai.py — NOT read anywhere else. This file
+# is the single source of truth for the demo persona's investor profile and
+# strategy memos; the script contains no hard-coded content, only plumbing.
+#
+# Voice / consistency: every fact here traces back to
+# tools/demo_data/persona.yaml (identity, holdings, targets, timeline). The
+# household is "Xiaoming Wang" (王小明), the same fictional persona
+# generate.py emits reader fixtures for. Asset ids below are the canonical
+# ids that actually land in `holdings.asset_id` after a demo sync — verified
+# against a real synced demo DB while building this file (US_STK_* for the
+# whole Schwab/IBKR equity sleeve including the ETFs, not US_ETF_* — the
+# Consolidated co-authority merge normalizes them all to US_STK_*).
+#
+# Determinism: static content, no randomness. Editing this file changes what
+# the seeder writes; the seeder itself has no logic that could produce a
+# different result for the same file.
+#
+# Language: written in English — the demo UI's default language
+# (src/services/ai_advisor/language_resolver.py DEFAULT_LANGUAGE). The
+# `user_profile` table has a single `language` column (no per-locale content
+# columns), so philosophy text cannot be stored in both languages at once;
+# seed_ai.py sets user_profile.language = 'en' to match this content.
+
+investor_profile:
+  display_name: "Xiaoming Wang"
+  language: en
+  philosophy:
+    goal: >-
+      Reach financial independence on a ~CNY 3.5M net worth base, then
+      compound it for long-term wealth preservation across US equities,
+      Chinese funds, gold, and property — without depending on any single
+      market, employer, or currency to get there.
+    horizon: >-
+      10-15 years to financial independence for the household as a whole.
+      Individual satellite positions (CN thematic/sector funds, each Amazon
+      RSU vest) are reviewed on much shorter 1-3 year tactical windows
+      inside that horizon — they are not held on the same conviction as the
+      core.
+    risk_tolerance: >-
+      Can tolerate a max drawdown of roughly 25-30% on the growth sleeve
+      (US equities plus CN satellite funds) without changing behavior. The
+      core — property, gold, insurance, cash and deposits — needs to stay
+      stable through any single-year shock; growth is taken on the
+      satellite, not the core.
+    core_weakness: >-
+      Prone to chasing recent winners in CN thematic/sector funds (baijiu,
+      growth-mixed) after a strong run, and slow to trim RSU concentration
+      after a vest instead of following the standing sell-to-cover plan.
+      Needs explicit, pre-committed rules at the moment of a big rally or a
+      big drop — not in-the-moment discretion.
+    portfolio_structure: >-
+      Three-tier structure, target ranges in parentheses.
+
+
+      Tier 1 — Core & Stability (45-55% of net worth): the 阳光花园 property
+      (gross ~CNY 1.85M, mortgage declining monthly), the CN money-market
+      fund (000198, 天弘余额宝货币A) as the CNY cash buffer, RMB/USD bank
+      deposits, and the two active insurance policies (安泰终身寿险2019,
+      惠民定期重疾) held purely for protection, not return. The lapsed
+      旧意外险 policy is history, not part of current coverage.
+
+
+      Tier 2 — Core Growth (30-40%): the US core index/ETF sleeve across
+      Schwab and IBKR — VOO, VTI, IEFA, SCHD, BND for diversified equity and
+      bond beta — plus CN core index exposure via 110020
+      (易方达沪深300ETF联接A). Rebalance back toward target when any single
+      core position drifts more than 5pp from its band.
+
+
+      Tier 3 — Satellite & Concentrated (10-20%): AAPL and BRK-B
+      single-stock positions, CN sector/thematic funds (161725
+      招商中证白酒指数A, 005827 易方达蓝筹精选混合, 519674 银河创新成长混合A),
+      paper gold (~160g split 招行/建行) as a non-correlated inflation
+      hedge (target 5-8% of net worth — revisit sizing above that band),
+      and Amazon RSU. RSU follows the standing sell-to-cover plan (4 of
+      every 12 vested shares); anything held beyond that standing plan
+      needs the discipline check from the core-weakness note above before
+      it counts as a deliberate decision rather than inertia.
+
+# ---------------------------------------------------------------------------
+# strategy_memos — 3 memos, dated after the persona's Schwab snapshot
+# (2026-05-23) and inside a plausible Q2/Q3 2026 review cadence.
+# ---------------------------------------------------------------------------
+strategy_memos:
+  - memo_date: "2026-06-05"
+    title: "US Equity Sleeve Review — Core Index Weighting vs AAPL/BRK-B Satellites"
+    strategic_bias: neutral
+    key_directives:
+      - "Hold VOO/VTI/SCHD/BND as the core US beta sleeve; no new core index buys above the standing rebalance band."
+      - "Cap combined AAPL + BRK-B satellite weight at 20% of the US equity sleeve; trim on drift above that."
+      - "IEFA (developed ex-US) stays a standing diversifier, not a tactical trade — do not time it."
+    content: >-
+      Reviewed the full US equity sleeve across Schwab (VOO, QQQ, SCHD,
+      AAPL, BRK-B, BND) and IBKR (VTI, IEFA) against the Tier 2/Tier 3
+      target bands in the investor profile.
+
+
+      Core (VOO, VTI, SCHD, BND): all four are within their target bands.
+      No action — the standing rebalance rule (rebalance when any single
+      core position drifts more than 5pp from target) has not triggered
+      for any of them.
+
+
+      Satellite (AAPL, BRK-B): combined single-stock weight is currently
+      well inside the 20%-of-equity-sleeve cap set for this pair. No trim
+      required this cycle. QQQ is treated as a tactical growth tilt on top
+      of the core, not a satellite single-name bet, and is not subject to
+      the AAPL/BRK-B cap.
+
+
+      IEFA is a standing developed-ex-US diversifier inside the core
+      sleeve — it is not sized or timed as a satellite position, and this
+      memo does not propose changing that.
+
+
+      Directive for next review: re-check the AAPL + BRK-B combined weight
+      against the 20% cap; nothing else on this sleeve needs a standing
+      trigger before then.
+
+  - memo_date: "2026-07-10"
+    title: "CN Core-Satellite Fund Thesis — 110020 Core vs 161725/519674/005827 Satellites"
+    strategic_bias: defensive
+    key_directives:
+      - "Falsification: revisit 110020 (CSI 300 core tracker) sizing if it drifts more than 5pp from its target allocation band for two consecutive monthly reviews."
+      - "Falsification: 161725 (招商中证白酒指数A, baijiu sector) thesis is falsified if sector distribution-channel regulation materially changes fund flow economics, or if its weight exceeds 8% of net worth for two consecutive quarters without a corresponding trim."
+      - "Falsification: 519674 (银河创新成长混合A) growth-mixed satellite is falsified if its 3-year rolling active share versus its benchmark drops below 60% (style drift toward closet indexing) — resize to core-only status if so."
+      - "Falsification: 005827 (易方达蓝筹精选混合) is falsified if its top-10 holding concentration exceeds 60% of NAV, i.e. it has stopped behaving like a diversified blue-chip fund."
+      - "NOT admissible as falsification for any of the above: price decline or unrealized loss alone. A falling price is what opens a value-trap review; it is not evidence the underlying thesis is broken."
+    content: >-
+      Falsification conditions for the CN fund book, split core vs
+      satellite. This memo exists specifically so a future value-trap
+      review on any of these funds has a documented thesis and explicit
+      falsification clauses to check against — not just a price chart.
+
+
+      Core: 110020 (易方达沪深300ETF联接A) is the CSI 300 core holding.
+      Falsification: sizing is revisited if it drifts more than 5
+      percentage points from its target allocation band for two
+      consecutive monthly reviews. This is a sizing/drift check, not a
+      performance judgment.
+
+
+      Satellites: 161725 (招商中证白酒指数A), 519674 (银河创新成长混合A) and
+      005827 (易方达蓝筹精选混合) are held as thematic/active satellites,
+      each with its own falsification condition (see key directives) —
+      sector regulation risk for 161725, active-share style drift for
+      519674, and holding-concentration drift for 005827. None of the
+      three is falsified by an unrealized loss by itself; a drawdown is
+      the trigger that opens the review, and this memo's conditions are
+      what the review is checked against.
+
+
+      Explicit falsification conditions (for the Value-Trap Review
+      feature to cite verbatim):
+      1) 110020 core drifts >5pp from target band for 2 consecutive months.
+      2) 161725 sector regulation changes distribution economics, OR its
+         weight exceeds 8% of net worth for 2 consecutive quarters.
+      3) 519674 3-year active share falls below 60% of benchmark.
+      4) 005827 top-10 concentration exceeds 60% of NAV.
+      Price decline and unrealized loss percentage are explicitly
+      INADMISSIBLE as falsification evidence for any of the four — they
+      open a review, they do not settle it.
+
+  - memo_date: "2026-08-14"
+    title: "Alternative & Concentration Risk Policy — Paper Gold, Amazon RSU, Property"
+    strategic_bias: defensive
+    key_directives:
+      - "Paper gold (ALTS_Paper_Gold) target band is 5-8% of net worth; revisit sizing if it moves outside that band for a full quarter."
+      - "RSU_AMZN: keep the standing sell-to-cover (4 of every 12 vested shares); any RSU held beyond that plan must be a deliberate decision, logged, not a default."
+      - "Property (Property_阳光花园) is Tier 1 core — not rebalanced on price; mortgage paydown continues on schedule regardless of property valuation swings."
+    content: >-
+      Policy memo for the three positions that don't fit the standard
+      equity/fund rebalance logic: paper gold, Amazon RSU, and the
+      property.
+
+
+      Paper gold (~160g combined across 招行 and 建行 paper-gold accounts)
+      is held as a non-correlated inflation hedge, target 5-8% of net
+      worth. It is not a tactical trading position — sizing is revisited
+      only if it drifts outside that band for a full quarter, not on
+      short-term gold-price moves.
+
+
+      Amazon RSU vests quarterly (12 shares/vest); the standing plan
+      sells 4 of every 12 vested shares to cover concentration risk
+      automatically. Any RSU shares retained beyond that standing
+      sell-to-cover plan must be a logged, deliberate decision — this is
+      the household's known behavioral weakness (see investor profile
+      core_weakness) and the reason this policy is written down instead
+      of left to discretion at vest time.
+
+
+      Property (阳光花园) is Tier 1 core. It is not rebalanced against
+      short-term valuation moves; the mortgage paydown schedule is
+      independent of the property's mark-to-market value.
+
+# ---------------------------------------------------------------------------
+# memo_registry / memo_asset_map — the schema's actual asset-linkage
+# mechanism (src/services/memo_registry.py, used by the Value-Trap Review
+# feature: src/api/routes/value_trap.py). strategy_memos itself has no
+# asset foreign key, so this is how a memo becomes something the
+# Value-Trap Review's falsification-evidence prompt can actually cite for
+# a given asset_id, rather than only living in the AI-advisor context
+# builder's free-text strategy_memos read. One row per strategy memo above,
+# same title, condensed falsification_summary, linked to the real demo
+# asset_ids those memos discuss.
+# ---------------------------------------------------------------------------
+memo_registry:
+  - memo_id: "DEMO-AI-US-CORE-2026Q2"
+    title: "US Equity Sleeve Review — Core Index Weighting vs AAPL/BRK-B Satellites"
+    falsification_summary: >-
+      Core (VOO/VTI/SCHD/BND/IEFA) sizing thesis holds while each stays
+      inside its target band; AAPL+BRK-B satellite thesis is falsified if
+      their combined weight exceeds 20% of the US equity sleeve for two
+      consecutive reviews. Price decline alone is not falsification.
+    linked_assets:
+      - US_STK_VOO
+      - US_STK_VTI
+      - US_STK_SCHD
+      - US_STK_BND
+      - US_STK_IEFA
+      - US_STK_AAPL
+      - US_STK_BRK-B
+  - memo_id: "DEMO-AI-CN-SATELLITE-2026Q3"
+    title: "CN Core-Satellite Fund Thesis — 110020 Core vs 161725/519674/005827 Satellites"
+    falsification_summary: >-
+      110020 core drifts >5pp from target band for 2 consecutive months;
+      161725 falsified if sector regulation changes distribution economics
+      or weight exceeds 8% of net worth for 2 consecutive quarters; 519674
+      falsified if 3-year active share falls below 60% of benchmark;
+      005827 falsified if top-10 concentration exceeds 60% of NAV. Price
+      decline / unrealized loss alone is explicitly inadmissible as
+      falsification evidence for any of the four.
+    linked_assets:
+      - CN_FUND_110020
+      - CN_FUND_161725
+      - CN_FUND_519674
+      - CN_FUND_005827
+  - memo_id: "DEMO-AI-ALTS-CONCENTRATION-2026Q3"
+    title: "Alternative & Concentration Risk Policy — Paper Gold, Amazon RSU, Property"
+    falsification_summary: >-
+      Paper gold target band is 5-8% of net worth, revisited only if
+      outside that band for a full quarter (not on short-term price
+      moves). RSU sell-to-cover plan (4 of every 12 vested shares) is the
+      standing policy; retained shares beyond it require a logged
+      deliberate decision. Property is Tier-1 core and is not rebalanced
+      on valuation swings.
+    linked_assets:
+      - ALTS_Paper_Gold
+      - RSU_AMZN
+      - Property_阳光花园
+
+# ---------------------------------------------------------------------------
+# sample_brief / sample_review — Phase 3b (Round 5 finding #3). ONE sample
+# daily Brief and ONE completed Review so a new user without an LLM key can
+# see what the AI Advisor's output looks like before ever configuring a key.
+#
+# content_json under each follows the EXACT contract the real generator
+# writes (src/services/ai_advisor/prompts.py _BRIEF_JSON_SCHEMA_BY_LANG /
+# _REVIEW_JSON_SCHEMA_BY_LANG): stable ASCII section IDs from section_ids.py,
+# enum values (status/action/accuracy_tier) exactly as defined there. This is
+# what lets the existing UI (BriefSection.tsx, ReviewFlow.tsx) render every
+# section with no code change.
+#
+# seed_ai.py marks both rows with model_used = 'demo-sample' — the marker the
+# frontend badge (Program BIL demoSample i18n keys) checks for, and the same
+# value used as this script's own idempotency key: "the one row per
+# report_type carrying this marker" (ai_reports has no natural unique key to
+# ON CONFLICT against, unlike strategy_memos/memo_registry).
+#
+# Every fact below traces to persona.yaml holdings and the strategy_memos /
+# investor_profile seeded above — NOT to any live market reading. Numbers are
+# deliberately avoided or hedged as "as of the demo snapshot" so this can
+# never be mistaken for a real measurement (AGENTS.md Core Doctrine).
+# ---------------------------------------------------------------------------
+sample_brief:
+  title: "Sample daily brief"
+  content_json:
+    macro_outlook:
+      narrative: >-
+        This is a sample brief, written for the demo persona (Xiaoming Wang)
+        to show what the AI Advisor's daily output looks like — it is not
+        generated by an AI model and does not reflect live market
+        conditions. A real generated brief opens by synthesizing market
+        temperature, the macro backdrop and portfolio state into a single
+        top priority for the day; this sample keeps that synthesis
+        illustrative rather than claiming any specific market reading, since
+        the demo persona has no live market feed behind it.
+      key_factors:
+        - "Portfolio state, not the macro tape, drives this sample — see the holdings analysis below for the demo persona's actual tier structure."
+        - "A real brief would cite specific macro drivers (rates, USD strength, sector rotation); this sample deliberately omits them so it is never mistaken for a live market read."
+    holdings_risk:
+      narrative: >-
+        As of the demo snapshot, the three-tier structure from the investor
+        profile is intact: Tier 1 core & stability, Tier 2 core growth (the
+        US index sleeve plus 110020), and Tier 3 satellite & concentrated
+        positions (AAPL, BRK-B, CN thematic funds, paper gold, Amazon RSU).
+      positions:
+        - name: "US core index sleeve (VOO / VTI / SCHD / BND)"
+          status: hold
+          comment: "Within target bands per the 2026-06-05 US Equity Sleeve Review memo — no rebalance trigger."
+        - name: "AAPL + BRK-B satellites"
+          status: watch
+          comment: "Combined weight sits inside the 20%-of-equity-sleeve cap from the same memo; the standing directive is to re-check this pair every review cycle."
+        - name: "161725 (招商中证白酒指数A)"
+          status: watch
+          comment: "Falsification condition from the 2026-07-10 CN memo: revisit if weight exceeds 8% of net worth for two consecutive quarters — not on price alone."
+        - name: "Amazon RSU"
+          status: watch
+          comment: "Standing sell-to-cover plan (4 of every 12 vested shares) from the 2026-08-14 policy memo; any shares retained beyond it need a logged, deliberate decision."
+    risk_alerts:
+      narrative: >-
+        Sample risk summary grounded in the seeded strategy memos'
+        falsification conditions rather than any live drawdown reading.
+      items:
+        - title: "CN satellite concentration"
+          severity: medium
+          description: "161725 and its CN satellite siblings carry explicit falsification thresholds (sector regulation change, active-share drift, NAV concentration) — none are triggered by price movement alone."
+        - title: "RSU concentration drift"
+          severity: medium
+          description: "The household's documented core weakness is under-trimming RSU after a vest; the standing sell-to-cover plan is the safeguard against that."
+        - title: "Paper gold sizing band"
+          severity: low
+          description: "Target band is 5-8% of net worth; revisit only if it drifts outside that band for a full quarter, per the alternatives policy memo."
+    action_items:
+      narrative: >-
+        This sample keeps every recommended action tied to a standing
+        directive already on file, rather than a live buy/sell call the demo
+        persona has no market data to justify.
+      actions:
+        - asset: "US core index sleeve"
+          action: hold
+          reasoning: "No position has drifted more than 5pp from its target band; the standing rebalance rule has not triggered."
+        - asset: "AAPL + BRK-B"
+          action: hold
+          reasoning: "Combined satellite weight remains inside the 20% cap; trim only if that changes."
+        - asset: "Amazon RSU"
+          action: sell
+          reasoning: "Continue the standing sell-to-cover plan (4 of every 12 vested shares) on the next vest; anything beyond that needs a logged decision."
+    watchlist:
+      narrative: >-
+        Tomorrow's watch items are the same falsification triggers the
+        strategy memos already define — this sample does not invent new
+        ones.
+      watchlist:
+        - item: "110020 (CSI 300 core tracker) sizing"
+          trigger: "Drifts more than 5pp from its target band for two consecutive monthly reviews"
+          level: "Target allocation band, not a price level"
+        - item: "161725 (白酒指数) weight"
+          trigger: "Exceeds 8% of net worth for two consecutive quarters"
+          level: "% of net worth"
+        - item: "Paper gold sizing"
+          trigger: "Outside the 5-8% of net worth band for a full quarter"
+          level: "% of net worth"
+
+sample_review:
+  title: "Sample investment review 2026-07-15 ~ 2026-08-14"
+  period_start: "2026-07-15"
+  period_end: "2026-08-14"
+  content_json:
+    trade_summary:
+      narrative: >-
+        Sample review, written for the demo persona — not generated by an AI
+        model. It walks through the trade-discipline framing a real Review
+        would use, anchored to the standing plans already in the investor
+        profile and strategy memos rather than any executed trade log.
+      trades:
+        - asset: "Amazon RSU"
+          action: sell
+          date: "2026-08-14"
+          logic: "Standing sell-to-cover plan (4 of every 12 vested shares) executed on schedule per the alternative & concentration policy memo."
+        - asset: "US core index sleeve (VOO/VTI/SCHD/BND)"
+          action: hold
+          date: "2026-08-14"
+          logic: "No core position drifted more than 5pp from target; the standing rebalance rule did not trigger this period."
+      grade_breakdown: {}
+    advice_accuracy:
+      narrative: >-
+        This sample scorecard illustrates the format only — there is no live
+        trade history behind the demo persona to grade against.
+      scorecard:
+        - decision: "Hold the US core sleeve through the review period"
+          accuracy_tier: high
+          verdict: "Consistent with the standing rebalance rule; no core position drifted more than 5pp from target."
+        - decision: "Continue the standing RSU sell-to-cover plan instead of discretionary trimming"
+          accuracy_tier: high
+          verdict: "Matches the household's documented core weakness (under-trimming after a vest) and the pre-committed rule written to guard against it."
+    portfolio_performance:
+      narrative: >-
+        A real Review would report period return, allocation drift and a
+        benchmark comparison from live snapshots. This sample deliberately
+        omits specific performance figures — the demo persona's snapshot is
+        fixed as of 2026-05-23 and would misstate real, moving figures if
+        presented as live results.
+    lessons_learned:
+      narrative: >-
+        Sample lessons drawn straight from the seeded strategy memos'
+        documented core weakness, not from any trade executed this period.
+      lessons:
+        - "Pre-committed rules (the RSU sell-to-cover plan, the AAPL+BRK-B 20% cap) work because they remove in-the-moment discretion at the exact points — a big rally or a big vest — where the household's documented core weakness would otherwise take over."
+      improvements:
+        - "Next review: re-check 110020 and the CN satellite funds against their falsification conditions before any new capital enters that sleeve."
+    rule_updates:
+      narrative: >-
+        No new rules proposed in this sample — the existing falsification
+        conditions and sizing bands from the strategy memos already cover
+        this period's decisions.
+      suggestions: []
+
+# ---------------------------------------------------------------------------
+# insights_lifecycle — Phase 3c (Round 5 finding #3). Populates ai_insights
+# (src/services/ai_advisor/insight_manager.py) so the Insight Library shows
+# real examples at every lifecycle stage: raw -> recurring -> validated ->
+# principle. Every insight beyond 'raw' is written to already satisfy the F6
+# promote gate (check_promotion_gate: confidence >= 0.70 OR validated_cases
+# >= 3) at its OWN current confidence/validated_cases — the gate is stateless
+# (re-evaluated fresh on every call), so a row's current fields must clear
+# the gate for its current status to be internally consistent with the app's
+# own promote_insight() logic. Nothing here is a live measurement: every
+# confidence/validated_cases value is this seeder's own editorial judgment
+# about a fictional persona, exactly like the strategy memos above.
+#
+# entity_refs + created_at are chosen so several of these pair with REAL
+# rows already produced by the demo generator/sync (transactions table) —
+# this is what lets BehavioralMetricsComputer._decision_speed measure a
+# genuine median days-to-trade without any fabricated transaction or price
+# data (see tools/demo_data/seed_ai.py seed_insights_lifecycle docstring for
+# the exact asset/date pairing rationale).
+#
+# category: 'recommendation' is a real, code-recognized category (see
+# insight_manager.bridge_ai_insights_to_decision_hub) — it is what makes an
+# insight enter the Decision Hub / Review Center adoption funnel regardless
+# of lifecycle status. Other categories ('risk','timing','sizing','strategy',
+# 'process') stay Insight-Library-only until status reaches recurring/
+# principle, at which point they bridge into the Decision Hub's growth
+# timeline as category 'lesson' (see insight_manager.py module docstring).
+insights_lifecycle:
+  - title: "161725 weight approaching the 8% net-worth watch line"
+    category: risk
+    status: raw
+    confidence: 0.35
+    validated_cases: 0
+    entity_refs: [CN_FUND_161725]
+    created_at: "2026-04-05"
+    tags: [cn-satellite, concentration]
+    body: >-
+      Early raw observation, noted before the formal Q3 CN satellite memo
+      existed: 161725 (招商中证白酒指数A) weight was drifting up faster than
+      the other CN satellites. Not yet reviewed against a falsification
+      condition — flagged for the next strategy review.
+
+  - title: "RSU sell-to-cover executed on schedule at each vest"
+    category: recommendation
+    status: recurring
+    confidence: 0.72
+    validated_cases: 1
+    recurrence_count: 3
+    entity_refs: [RSU_AMZN]
+    created_at: "2026-04-01"
+    tags: [rsu, discipline]
+    body: >-
+      Recurring pattern across the last three vests: the standing
+      sell-to-cover plan (4 of every 12 vested shares) was executed on
+      schedule each time, with no shares retained beyond the plan.
+      Recommendation: keep the standing plan as-is — no discretionary
+      change needed.
+
+  - title: "519674 active-share style drift flagged across three consecutive reviews"
+    category: risk
+    status: recurring
+    confidence: 0.45
+    validated_cases: 3
+    recurrence_count: 3
+    entity_refs: [CN_FUND_519674]
+    created_at: "2026-04-10"
+    tags: [cn-satellite, style-drift]
+    validated_case_links:
+      - link: "review:2026-Q1-monthly"
+        note: "Active share within normal range this review."
+        added_at: "2026-04-10"
+      - link: "review:2026-Q2-monthly-1"
+        note: "Active share ticking down; not yet at the 60% falsification line."
+        added_at: "2026-05-10"
+      - link: "review:2026-Q2-monthly-2"
+        note: "Third consecutive review showing the same downward drift; monitoring, not yet falsified."
+        added_at: "2026-06-10"
+    body: >-
+      Same style-drift signal recurring across three consecutive monthly
+      reviews (see validated_case_links): 519674's active share is trending
+      down but has not yet crossed the 60%-of-benchmark falsification line
+      from the 2026-07-10 CN satellite memo. Monitoring only — not yet a
+      recommendation to resize.
+
+  - title: "AAPL+BRK-B combined satellite weight validated inside 20% cap"
+    category: strategy
+    status: validated
+    confidence: 0.78
+    validated_cases: 2
+    entity_refs: [US_STK_AAPL, US_STK_BRK-B]
+    created_at: "2026-06-20"
+    tags: [us-satellite, cap-check]
+    validated_case_links:
+      - link: "review:2026-06-05-memo"
+        note: "Combined weight confirmed inside the 20%-of-equity-sleeve cap."
+        added_at: "2026-06-20"
+      - link: "review:2026-Q2-monthly"
+        note: "Re-checked at the following monthly review; still inside the cap."
+        added_at: "2026-06-28"
+    body: >-
+      Validated finding from the June US equity sleeve review: the combined
+      AAPL + BRK-B satellite weight is confirmed inside the 20%-of-equity-
+      sleeve cap set by the 2026-06-05 memo, checked twice since. Thesis
+      holds; no trim required this cycle.
+
+  - title: "Paper gold sizing validated within the 5-8% band across three reviews"
+    category: process
+    status: validated
+    confidence: 0.55
+    validated_cases: 3
+    entity_refs: [ALTS_Paper_Gold]
+    created_at: "2026-08-01"
+    tags: [alts, sizing]
+    validated_case_links:
+      - link: "review:2026-06-monthly"
+        note: "Within the 5-8% of net worth band."
+        added_at: "2026-06-15"
+      - link: "review:2026-07-monthly"
+        note: "Still within band after the July gold price move."
+        added_at: "2026-07-15"
+      - link: "review:2026-08-14-memo"
+        note: "Confirmed within band at the alts policy memo review."
+        added_at: "2026-08-01"
+    body: >-
+      Paper gold sizing checked against the 5-8%-of-net-worth band from the
+      2026-08-14 alternatives policy memo across three separate reviews;
+      stayed within band each time. Validated — no sizing action needed.
+
+  - title: "Core sleeve rebalance discipline promoted to standing principle"
+    category: recommendation
+    status: principle
+    confidence: 0.85
+    validated_cases: 4
+    rule_layer: principle
+    entity_refs: [US_STK_VTI, US_STK_IEFA]
+    created_at: "2026-06-22"
+    tags: [us-core, rebalance, principle]
+    validated_case_links:
+      - {link: "review:2026-06-05-memo", note: "Core sleeve within band.", added_at: "2026-06-22"}
+      - {link: "review:2026-07-monthly", note: "Still within band.", added_at: "2026-07-15"}
+      - {link: "review:2026-08-monthly", note: "Still within band.", added_at: "2026-08-15"}
+      - {link: "review:2026-09-monthly", note: "Fourth consecutive clean review.", added_at: "2026-09-15"}
+    body: >-
+      Promoted to a standing principle after four consecutive clean reviews:
+      "rebalance the US core sleeve only when a position drifts more than
+      5pp from target; never on a bare price move." VTI/IEFA additions
+      since have followed this rule rather than a discretionary call.
+
+  - title: "Standing RSU sell-to-cover discipline promoted to checklist item"
+    category: recommendation
+    status: principle
+    confidence: 0.90
+    validated_cases: 5
+    rule_layer: checklist_item
+    entity_refs: [RSU_AMZN]
+    created_at: "2026-08-16"
+    tags: [rsu, discipline, principle]
+    validated_case_links:
+      - {link: "review:2025-Q4-vest", note: "On schedule.", added_at: "2025-11-15"}
+      - {link: "review:2026-Q1-vest", note: "On schedule.", added_at: "2026-02-15"}
+      - {link: "review:2026-Q2-vest", note: "On schedule.", added_at: "2026-05-15"}
+      - {link: "review:2026-Q3-vest", note: "On schedule; formalized as a checklist item.", added_at: "2026-08-16"}
+      - {link: "review:2026-08-14-memo", note: "Matches the alts/concentration policy memo directive.", added_at: "2026-08-16"}
+    body: >-
+      Formalized as a checklist-export item after the fourth consecutive
+      on-schedule sell-to-cover vest: "always sell 4 of every 12 vested
+      shares; any shares retained beyond that plan must be a logged,
+      deliberate decision." Matches the 2026-08-14 alternatives policy
+      memo's standing directive verbatim.
+
+  - title: "Consider trimming QQQ tactical tilt after a strong run"
+    category: recommendation
+    status: raw
+    confidence: 0.30
+    validated_cases: 0
+    entity_refs: [US_STK_QQQ]
+    created_at: "2026-07-25"
+    tags: [us-tactical, qqq]
+    body: >-
+      Early, unreviewed suggestion: QQQ's tactical growth tilt (on top of
+      the core sleeve, not subject to the AAPL/BRK-B satellite cap) has run
+      well ahead of the core sleeve this quarter. Not yet accepted or
+      rejected by the household — flagged for the next sleeve review.
+
+# ---------------------------------------------------------------------------
+# insight_adoptions — which of the bridged (category=recommendation)
+# insights above the household has already acted on. Keyed by the
+# insights_lifecycle title above (looked up via its ai_insights.id after
+# upsert, then applied to the bridged Decision Hub `insights` row). Omitted
+# titles are left at adopted = NULL (still pending) — this is real, editable
+# household decision state, not a computed measurement, exactly like a real
+# user clicking "adopt" / "reject" in the Decision Hub UI.
+# ---------------------------------------------------------------------------
+insight_adoptions:
+  - title: "RSU sell-to-cover executed on schedule at each vest"
+    adopted: true
+  - title: "Core sleeve rebalance discipline promoted to standing principle"
+    adopted: true
+  - title: "Standing RSU sell-to-cover discipline promoted to checklist item"
+    adopted: true
+  # "Consider trimming QQQ tactical tilt after a strong run" is deliberately
+  # left off this list -> stays adopted = NULL (pending), giving the Review
+  # Center a real pending item alongside the adopted ones.
+
+# ---------------------------------------------------------------------------
+# trade_logs — Phase 3c. A handful of owner-recorded decisions (as opposed
+# to the reader-imported ledger rows already in trade_logs with
+# suggestion_source='imported', verdict=NULL by design — see V5.8.0 Rule B
+# carve-out in src/validation/data_integrity_gate.py). Every row here is
+# written to already satisfy check #19 (trade_log_verdict_consistency):
+# verdict is always paired with a non-empty verification_result (Rule A),
+# and verification_status='verified' always carries a verdict since
+# suggestion_source here is never NULL/'imported' (Rule B). outcome_pct is
+# deliberately left NULL on every row: this demo DB's market_daily table
+# holds only a same-day price snapshot (no historical series), so a
+# numeric outcome_pct would have to be invented rather than computed —
+# these verdicts are the household's own qualitative post-mortem judgment
+# instead, exactly like a real user who writes a verification narrative
+# without the app's price-based auto-scorer ever having run for them.
+#
+# Two rows (suggestion_source: review) are dated within 3 days of an
+# insights_lifecycle 'recommendation' entry's created_at above, so
+# src.services.decision_links.recompute_auto_links (called by the seeder,
+# the app's own real linker — never a hand-built row) creates a genuine,
+# non-orphaned insight_trade_links row for each. The rest (suggestion_source:
+# manual) are independent household decisions with no AI attribution.
+# ---------------------------------------------------------------------------
+trade_logs:
+  - log_date: "2026-06-23"
+    asset_id: US_STK_VTI
+    asset_name: "VANGUARD TOTAL STOCK MARKET ETF"
+    action: Buy
+    price: 238.10
+    quantity: 5
+    amount: -1190.50
+    decision_reason: >-
+      Added to the VTI core sleeve after the rebalance-discipline principle
+      was formalized; the position was inside its target band per the June
+      review, so this was a scheduled top-up rather than a tactical call.
+    ai_suggestion: >-
+      AI Advisor's core-sleeve rebalance principle flagged VTI/IEFA as still
+      within band, supporting a small scheduled top-up rather than a new
+      tactical buy.
+    suggestion_source: review
+    verification_status: verified
+    verification_date: "2026-07-25"
+    verification_result: >-
+      Top-up held within the standing core band through the following
+      review; no drift or rebalance trigger followed.
+    verdict: good_call
+    order_origin: manual
+
+  - log_date: "2026-08-15"
+    asset_id: RSU_AMZN
+    asset_name: "Amazon RSU"
+    action: Sell
+    price: 205.00
+    quantity: 4
+    amount: 820.00
+    decision_reason: >-
+      Sold 4 of the 12 vested shares per the standing sell-to-cover plan,
+      the same day the practice was formalized as a checklist item.
+    ai_suggestion: >-
+      AI Advisor recommended keeping the sell-to-cover ratio fixed rather
+      than discretionarily retaining shares after four consecutive
+      on-schedule vests.
+    suggestion_source: review
+    verification_status: verified
+    verification_date: "2026-09-01"
+    verification_result: >-
+      Sell-to-cover executed exactly as planned; no shares retained outside
+      the standing plan this vest.
+    verdict: good_call
+    order_origin: manual
+
+  - log_date: "2026-06-18"
+    asset_id: US_STK_AAPL
+    asset_name: "APPLE INC"
+    action: Sell
+    price: 208.40
+    quantity: 3
+    amount: 625.20
+    decision_reason: >-
+      Trimmed 3 AAPL shares after the June sleeve review showed the
+      combined AAPL+BRK-B weight nearing the 20%-of-equity-sleeve cap.
+    suggestion_source: manual
+    verification_status: verified
+    verification_date: "2026-07-20"
+    verification_result: >-
+      Combined satellite weight settled back inside the equity-sleeve cap
+      after the trim; no further action needed this cycle.
+    verdict: good_call
+    order_origin: manual
+
+  - log_date: "2026-07-05"
+    asset_id: CN_FUND_161725
+    asset_name: "招商中证白酒指数A"
+    action: Sell
+    price: 0.5250
+    quantity: 8000
+    amount: 4200.00
+    decision_reason: >-
+      Trimmed 161725 after the position approached the 8%-of-net-worth
+      watch line noted ahead of the July CN satellite memo.
+    suggestion_source: manual
+    verification_status: verified
+    verification_date: "2026-08-10"
+    verification_result: >-
+      Weight moved back under the watch line; sector-regulation risk
+      unchanged, thesis not falsified by this trim alone.
+    verdict: good_call
+    order_origin: manual
+
+  - log_date: "2026-06-30"
+    asset_id: ALTS_Paper_Gold
+    asset_name: "纸黄金"
+    action: Buy
+    price: 770.00
+    quantity: 20
+    amount: -15400.00
+    decision_reason: >-
+      Topped up paper gold after it drifted toward the low end of the
+      5-8% band; sized smaller than the band would have supported.
+    suggestion_source: manual
+    verification_status: verified
+    verification_date: "2026-08-05"
+    verification_result: >-
+      Top-up was smaller than needed to fully restore the band; position
+      stayed modestly under-sized through the next review — a partial miss
+      on sizing discipline, not a market-timing call.
+    verdict: regret
+    order_origin: manual
