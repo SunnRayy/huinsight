@@ -47,8 +47,22 @@ BASE_REF="$(git rev-parse --verify --quiet "origin/$BASE" || git rev-parse --ver
 echo "[verify_public_push] published: $(git log -1 --format='%h %s')"
 
 # ── 1. The published tree must equal the export, file for file ─────────────
-if ! diff -rq --exclude=.git "$EXPORT_DIR" "$CLONE"; then
-    echo "[verify_public_push] FAIL: the published tree differs from the export (above)." >&2
+# Files (and symlinks) only: git cannot carry an empty directory, and the
+# export leaves a couple behind where the manifest excluded their contents.
+list_files() { (cd "$1" && find . -path ./.git -prune -o \( -type f -o -type l \) -print | LC_ALL=C sort); }
+if ! diff <(list_files "$EXPORT_DIR") <(list_files "$CLONE"); then
+    echo "[verify_public_push] FAIL: file lists differ (< export only, > published only)." >&2
+    exit 1
+fi
+MISMATCH=0
+while IFS= read -r f; do
+    if ! cmp -s "$EXPORT_DIR/$f" "$CLONE/$f"; then
+        echo "differs: $f" >&2
+        MISMATCH=1
+    fi
+done < <(list_files "$EXPORT_DIR")
+if [ "$MISMATCH" -ne 0 ]; then
+    echo "[verify_public_push] FAIL: published content differs from the export (above)." >&2
     exit 1
 fi
 echo "[verify_public_push] OK: published tree == export tree ($(git ls-files | wc -l | tr -d ' ') files)"

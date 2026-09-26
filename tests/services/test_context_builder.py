@@ -1581,6 +1581,7 @@ class TestSettingsManagerPhilosophy:
                     display_name VARCHAR,
                     avatar_base64 TEXT,
                     philosophy TEXT,
+                    language VARCHAR,  -- V89; get_profile() reads it
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
                 """
@@ -1630,6 +1631,7 @@ class TestSettingsManagerPhilosophy:
                     display_name VARCHAR,
                     avatar_base64 TEXT,
                     philosophy TEXT,
+                    language VARCHAR,  -- V89; get_profile() reads it
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
                 """
@@ -1670,6 +1672,7 @@ class TestSettingsManagerPhilosophy:
                     display_name VARCHAR,
                     avatar_base64 TEXT,
                     philosophy TEXT,
+                    language VARCHAR,  -- V89; get_profile() reads it
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
                 """
