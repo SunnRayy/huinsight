@@ -163,7 +163,8 @@
       "years": "years",
       "goal": "Goal {{value}}",
       "today": "today",
-      "medianYears": "median {{years}}y"
+      "medianYears": "median {{years}}y",
+      "assumptionBased": "Assumption-based range — not yet your measured history"
     },
     "yourPath": {
       "errors": {
@@ -239,7 +240,10 @@
       "chipLiquidNw": "Liquid NW",
       "chipContribution": "Contribution",
       "perMonth": "/mo",
-      "chipReturnVol": "Return / Vol"
+      "chipReturnVol": "Return / Vol",
+      "assumptionBanner": "Not enough history yet (needs {{minMonths}}–{{maxMonths}} months) — projecting with a long-run assumption: {{ret}} return, {{vol}} volatility. <edit>Edit assumption</edit>",
+      "assumptionEditHelp": "The assumption lives in <code>config/verification.yaml</code> (copy <code>config/verification.example.yaml</code> if you don't have one): <code>{{keys}}</code> (fractions, e.g. 0.05 = 5%). Restart the backend after editing. To try other numbers without changing it, use Advanced: Custom Simulation below. Once your history is long enough, the measured figures replace it automatically.",
+      "chipReturnVolAssumed": "Return / Vol (assumed)"
     }
   },
   "verification": {

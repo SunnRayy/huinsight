@@ -15,7 +15,13 @@
 # 文件才是模板。
 
 profile:
-  display_name: "Demo User"
+  # The demo persona's name (tools/demo_data/persona.yaml), so the header
+  # matches the demo's AI content before and after seed_ai.py. Change it, or
+  # set it in Settings, when you point this at your own data.
+  #
+  # 中文：演示角色的名字，与演示数据的 AI 内容保持一致。换成你自己的数据时，
+  # 在这里修改，或在「设置」页面中设置。
+  display_name: "Xiaoming Wang"
   # No avatar_url key here on purpose — this project's own real settings.yaml
   # embeds one as base64, and that's exactly the kind of thing an example
   # config should never carry a placeholder for (an empty key invites

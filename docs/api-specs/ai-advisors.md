@@ -220,14 +220,34 @@ Strategy-aware action alerts for the Action Inbox (alert badge count + priority 
 **Response**
 
 ```typescript
+// Shape as returned by src/services/alert_generator.py (updated 2026-09-26,
+// Round 7 — the earlier id/type/description/action_url shape was never built).
 interface Alert {
-  id: string;
+  category: "drift" | "strategy" | "verification" | "trading";
   priority: "high" | "medium" | "low";
-  type: "drift" | "strategy" | "verification" | "market";
-  title: string;
-  description: string;
-  action_url?: string;    // Frontend route to navigate to
-  created_at: string;     // ISO datetime
+  title: string;     // English fallback; the UI localizes drift alerts from `data`
+  message: string;   // English fallback
+  data: Record<string, unknown> | DriftAlertData;
+}
+
+// category === "drift" (Round 7 #1: every drift alert names its yardstick)
+interface DriftAlertData {
+  asset_class: string;            // taxonomy_classes.name (the key)
+  asset_class_cn: string | null;  // taxonomy_classes.name_cn, for zh-CN display
+  drift_pct: number;              // |actual - target|, percentage points
+  actual_pct: number;
+  target_pct: number;
+  basis: "strategic" | "risk_profile";
+  yardstick:
+    | { kind: "strategic" }
+    | {
+        kind: "risk_profile";
+        profile_id: number | null;
+        profile_name: string | null;  // user data, rendered verbatim
+        // true while the active profile is the seeded default the user never
+        // chose (risk_profiles.activated_by_user_at IS NULL); null = unknown
+        is_default: boolean | null;
+      };
 }
 
 interface AlertsResponse {

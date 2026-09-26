@@ -79,13 +79,19 @@ def test_forecast_levers_returns_200_with_full_shape(client):
     ), patch(
         "src.financial_analysis.metrics.calculate_portfolio_metrics",
         return_value={"volatility_annual": 17.9},
+    ), patch(
+        # measured-history premise (Round 7 #2 shared sufficiency predicate)
+        "src.validation.data_integrity_gate.twr_history_sufficiency",
+        return_value={"sufficient": True, "no_data": False, "reason": None, "valuation": {}},
     ):
         resp = test_client.get("/forecast/levers")
 
     assert resp.status_code == 200, resp.text
     body = resp.json()
 
-    assert set(body.keys()) == {"base", "levers", "combined", "goal"}
+    assert set(body.keys()) == {"base", "levers", "combined", "goal", "assumption"}
+    assert body["assumption"] is None
+    assert body["base"]["return_basis"] == "measured"
     assert set(body["levers"].keys()) == {"savings", "return", "volatility"}
     assert body["base"]["expected_return"] == pytest.approx(0.108)
     assert body["base"]["years_to_target"] is not None
@@ -169,5 +175,9 @@ def test_forecast_levers_never_500s_on_empty_db(client):
     assert resp.status_code == 200, resp.text
     body = resp.json()
     assert body["base"]["current_nw"] == 0.0
-    assert body["base"]["expected_return"] is None
+    # No history at all fails the shared sufficiency rule, so the labelled
+    # long-run assumption is used (Round 7 #2) — but from ¥0 with no
+    # contributions there is still no path to any target.
+    assert body["base"]["return_basis"] == "assumption"
+    assert body["assumption"]["reason"]
     assert body["base"]["years_to_target"] is None

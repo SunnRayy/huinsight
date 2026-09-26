@@ -401,6 +401,53 @@ def _windowed_portfolio_valuation(
     return result
 
 
+def twr_history_sufficiency(connector: DatabaseConnector) -> dict:
+    """Is there enough history to trust a measured portfolio return?
+
+    THE one sufficiency rule, shared by integrity check ``twr_in_range`` and
+    the Forecast's Your Path (``src.services.forecast_levers.compute_levers``,
+    Round 7 #2). The forecast used to project from a trailing return this
+    gate refused to trust on the same data; a second threshold written
+    elsewhere would drift apart again, so both call this
+    (tests/validation/test_history_sufficiency_shared.py pins it).
+
+    Sufficient when some window in ``TWR_CHECK_LOOKBACK_CANDIDATES`` (longest
+    first) has a like-for-like valuation basis covering at least
+    ``TWR_MIN_LIKE_FOR_LIKE_COVERAGE`` of current value — see
+    ``_windowed_portfolio_valuation``.
+
+    Returns ``{"sufficient", "no_data", "reason", "valuation"}``: ``reason``
+    is the skip reason when not sufficient (for the widest window tried), and
+    ``valuation`` the chosen window's figures when sufficient.
+    """
+    row = connector.execute("SELECT MAX(snapshot_date) FROM holdings").fetchone()
+    d_end = row[0] if row else None
+    if not d_end:
+        return {
+            "sufficient": False,
+            "no_data": True,
+            "reason": "No holdings data at all — skipped.",
+            "valuation": None,
+        }
+    if hasattr(d_end, "toPyDate"):
+        d_end = d_end.toPyDate()
+
+    # Longest window with an adequate like-for-like basis; keep the widest
+    # window's skip_reason so a total failure explains the BEST case tried.
+    result = None
+    for _window in TWR_CHECK_LOOKBACK_CANDIDATES:
+        candidate = _windowed_portfolio_valuation(connector, d_end, _window)
+        if "skip_reason" not in candidate:
+            result = candidate
+            break
+        if result is None:
+            result = candidate
+
+    if "skip_reason" in result:
+        return {"sufficient": False, "no_data": False, "reason": result["skip_reason"], "valuation": None}
+    return {"sufficient": True, "no_data": False, "reason": None, "valuation": result}
+
+
 def _check_twr_in_range(connector: DatabaseConnector) -> CheckResult:
     """
     Check 3: Annualized portfolio value-ratio return is within -80% to +200%.
@@ -452,40 +499,26 @@ def _check_twr_in_range(connector: DatabaseConnector) -> CheckResult:
     MIN_TWR = -0.80
     MAX_TWR = 2.00
 
-    row = connector.execute("SELECT MAX(snapshot_date) FROM holdings").fetchone()
-    d_end = row[0] if row else None
-    if not d_end:
+    sufficiency = twr_history_sufficiency(connector)
+    if sufficiency["no_data"]:
         return CheckResult(
             name="twr_in_range",
             passed=True,
             actual_value="no_data",
             threshold=f"{MIN_TWR:.0%} to {MAX_TWR:.0%}",
-            details="No holdings data at all — skipped.",
+            details=sufficiency["reason"],
             skipped=True,
         )
-    if hasattr(d_end, "toPyDate"):
-        d_end = d_end.toPyDate()
-
-    # Longest window with an adequate like-for-like basis; keep the last
-    # attempt's skip_reason so a total failure explains the BEST case tried.
-    result = None
-    for _window in TWR_CHECK_LOOKBACK_CANDIDATES:
-        candidate = _windowed_portfolio_valuation(connector, d_end, _window)
-        if "skip_reason" not in candidate:
-            result = candidate
-            break
-        if result is None:
-            result = candidate  # widest window's reason, reported if all fail
-
-    if "skip_reason" in result:
+    if not sufficiency["sufficient"]:
         return CheckResult(
             name="twr_in_range",
             passed=True,
             actual_value="insufficient_data",
             threshold=f"{MIN_TWR:.0%} to {MAX_TWR:.0%}",
-            details=result["skip_reason"],
+            details=sufficiency["reason"],
             skipped=True,
         )
+    result = sufficiency["valuation"]
 
     annualized = result["annualized"]
     passed = MIN_TWR <= annualized <= MAX_TWR

@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 import { useNavigate } from 'react-router-dom';
+import { DriftYardstick, useAlertText } from '../components/DriftAlertText';
 import {
     api,
     DecisionTimeline,
@@ -691,6 +692,32 @@ const ALERT_CATEGORY_ICONS: Record<string, string> = {
     strategy: 'policy',
 };
 
+const AlertRow: React.FC<{ alert: DecisionAlert }> = ({ alert }) => {
+    const { title, message } = useAlertText(alert);
+    return (
+        <div className="px-6 py-4 flex items-start gap-4 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+            <div className="mt-0.5 size-9 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0">
+                <span className="material-symbols-outlined text-[18px] text-slate-500 dark:text-slate-400">
+                    {ALERT_CATEGORY_ICONS[alert.category] || 'info'}
+                </span>
+            </div>
+            <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-0.5">
+                    <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">{title}</p>
+                    <span className={`shrink-0 px-2 py-0.5 rounded text-xs font-medium uppercase ${ALERT_PRIORITY_STYLES[alert.priority]}`}>
+                        {alert.priority}
+                    </span>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{message}</p>
+                <DriftYardstick alert={alert} className="text-xs text-slate-500 dark:text-slate-400 mt-0.5" />
+            </div>
+            <span className="shrink-0 px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-xs text-slate-500 dark:text-slate-400 capitalize">
+                {alert.category}
+            </span>
+        </div>
+    );
+};
+
 const AlertsSection: React.FC<{
     alerts: DecisionAlert[];
     allAlerts: DecisionAlert[];
@@ -747,27 +774,7 @@ const AlertsSection: React.FC<{
             <div className="px-6 py-5 text-sm text-slate-400 dark:text-slate-500 italic">{t('decisionHub.alerts.none')}</div>
         ) : (
             <div className="divide-y divide-slate-100 dark:divide-slate-800">
-                {alerts.map((alert, i) => (
-                    <div key={i} className="px-6 py-4 flex items-start gap-4 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-                        <div className="mt-0.5 size-9 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0">
-                            <span className="material-symbols-outlined text-[18px] text-slate-500 dark:text-slate-400">
-                                {ALERT_CATEGORY_ICONS[alert.category] || 'info'}
-                            </span>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-0.5">
-                                <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">{alert.title}</p>
-                                <span className={`shrink-0 px-2 py-0.5 rounded text-xs font-medium uppercase ${ALERT_PRIORITY_STYLES[alert.priority]}`}>
-                                    {alert.priority}
-                                </span>
-                            </div>
-                            <p className="text-xs text-slate-500 dark:text-slate-400">{alert.message}</p>
-                        </div>
-                        <span className="shrink-0 px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-xs text-slate-500 dark:text-slate-400 capitalize">
-                            {alert.category}
-                        </span>
-                    </div>
-                ))}
+                {alerts.map((alert, i) => <AlertRow key={i} alert={alert} />)}
             </div>
         )}
     </div>

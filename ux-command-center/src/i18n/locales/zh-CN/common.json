@@ -105,5 +105,13 @@
     "night": "夜间",
     "switchToDay": "切换到日间模式",
     "switchToNight": "切换到夜间模式"
+  },
+  "driftAlert": {
+    "title": "{{assetClass}}配置偏离目标 {{drift}}%",
+    "message": "当前：{{actual}}% | 目标：{{target}}%",
+    "vsStrategic": "对照战略目标",
+    "vsRiskProfile": "对照风险档位：{{name}} — <profiles>修改</profiles>",
+    "vsRiskProfileDefault": "对照风险档位：{{name}}（默认）— <profiles>修改</profiles>",
+    "unnamedProfile": "当前档位"
   }
 }

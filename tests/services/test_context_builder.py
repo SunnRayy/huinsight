@@ -770,6 +770,12 @@ class TestBuildIdentityContext:
                 result.fetchone.return_value = (None, phil)
             elif "risk_profiles" in query:
                 result.fetchone.return_value = (1, "均衡型", None, None)
+            elif "risk_profile_allocations" in query and "ptc.name" in query:
+                # summary: rolled up to top-level classes
+                result.fetchall.return_value = [
+                    ("股票", 64.0), ("固定收益", 20.0), ("商品", 10.0),
+                    ("另类投资", 5.0), ("现金", 1.0),
+                ]
             elif "risk_profile_allocations" in query:
                 result.fetchall.return_value = [
                     ("A股", 32.0), ("美股", 27.0), ("美债", 20.0),
@@ -794,8 +800,9 @@ class TestBuildIdentityContext:
         assert "最大30%回撤" in summary_out
         assert "10-20年" not in summary_out
         assert "受市场噪音" not in summary_out
-        # Summary truncates to top 4 allocations
-        assert "活期存款" not in summary_out  # 7th item, excluded in summary
+        # Summary lists every top-level class (sums to 100%), not sub-classes
+        assert "股票 64%" in summary_out and "现金 1%" in summary_out
+        assert "活期存款" not in summary_out
 
         # Detailed: shows all 4 philosophy bullets
         assert "10-20年" in detailed_out
@@ -1420,14 +1427,18 @@ class TestBuildInvestorProfileSection:
         assert "10-20年" not in result
         assert "追涨杀跌" not in result
 
-    def test_summary_limits_allocations_to_four(self):
-        """Summary must show at most 4 allocations."""
+    def test_summary_lists_every_class_level_allocation(self):
+        """Round 6 #3: summary rolls sub-classes up to top-level classes and
+        lists all of them, so the line sums to 100% (it used to cut at 4
+        sub-classes and read as 69%)."""
         phil = {"goal": "独立", "risk_tolerance": "中低"}
-        cb = self._make_builder_with_philosophy(phil)  # 6 alloc rows configured
+        cb = self._make_builder_with_philosophy(
+            phil, alloc_rows=[("股票", 60.0), ("固定收益", 20.0), ("商品", 10.0), ("现金", 10.0)]
+        )
         result = cb._build_investor_profile_section(detail="summary")
-        # Only top 4 should appear; 港股 and 现金 are in positions 5-6
-        assert "港股" not in result
-        assert "现金" not in result
+        alloc_sql = cb._db.execute.call_args_list[2].args[0]
+        assert "LEFT JOIN taxonomy_classes ptc" in alloc_sql
+        assert "股票 60%，固定收益 20%，商品 10%，现金 10%" in result
 
     def test_detailed_includes_all_philosophy_bullets(self):
         """Detailed must include goal, horizon, risk_tolerance, and core_weakness."""

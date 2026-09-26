@@ -28,6 +28,7 @@ def _insert_demo_marker_holding(connector) -> None:
 def _table_counts(connector) -> dict:
     return {
         "user_profile": connector.execute("SELECT COUNT(*) FROM user_profile").fetchone()[0],
+        "goals": connector.execute("SELECT COUNT(*) FROM goals").fetchone()[0],
         "strategy_memos": connector.execute("SELECT COUNT(*) FROM strategy_memos").fetchone()[0],
         "memo_registry": connector.execute("SELECT COUNT(*) FROM memo_registry").fetchone()[0],
         "memo_asset_map": connector.execute("SELECT COUNT(*) FROM memo_asset_map").fetchone()[0],

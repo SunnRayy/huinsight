@@ -105,5 +105,13 @@
     "night": "Night",
     "switchToDay": "Switch to Day mode",
     "switchToNight": "Switch to Night mode"
+  },
+  "driftAlert": {
+    "title": "{{assetClass}} allocation drifted {{drift}}% from target",
+    "message": "Current: {{actual}}% | Target: {{target}}%",
+    "vsStrategic": "vs strategic targets",
+    "vsRiskProfile": "vs risk profile: {{name}} — <profiles>change</profiles>",
+    "vsRiskProfileDefault": "vs risk profile: {{name}} (default) — <profiles>change</profiles>",
+    "unnamedProfile": "active profile"
   }
 }

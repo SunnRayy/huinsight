@@ -5,6 +5,7 @@ import { useLanguage } from '../../src/context/useLanguage';
 import { formatDate, formatTime } from '../../src/utils/formatMoney';
 import { fmtCNY, fmtPct } from './HeroKpis';
 import { api, DecisionAlert, DecisionItem, GainsAsset, DecisionIntelligence, MoversResponse, MoverRow } from '../../src/services/api';
+import { DriftYardstick, useAlertText } from '../../components/DriftAlertText';
 
 /* ========== Icon helper ========== */
 const Icon: React.FC<{ name: string; size?: number; color?: string }> = ({ name, size = 18, color }) => (
@@ -43,6 +44,21 @@ const alertTagColor: Record<string, string> = {
   verification: 'var(--color-primary)', trading: 'var(--color-warning)',
 };
 
+const ActionCenterAlert: React.FC<{ alert: DecisionAlert }> = ({ alert: w }) => {
+  const { title, message } = useAlertText(w);
+  return (
+    <div style={{ paddingLeft: 12, borderLeft: `2px solid ${alertTagColor[w.category] || 'var(--color-primary)'}` }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 2 }}>
+        <Pill tone={alertTagTone[w.category] || 'neutral'}>{w.category}</Pill>
+        <Pill tone={w.priority === 'high' ? 'danger' : w.priority === 'medium' ? 'warning' : 'neutral'}>{w.priority}</Pill>
+      </div>
+      <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--color-fg-1)', marginTop: 2 }}>{title}</div>
+      <div style={{ fontSize: 11, color: 'var(--color-fg-3)', lineHeight: 1.45, marginTop: 2 }}>{message}</div>
+      <DriftYardstick alert={w} style={{ fontSize: 11, color: 'var(--color-fg-3)', lineHeight: 1.45, marginTop: 2 }} />
+    </div>
+  );
+};
+
 export const ActionCenter: React.FC<{ alerts: DecisionAlert[] }> = ({ alerts }) => {
   const { t } = useTranslation('portfolio');
   return (
@@ -63,16 +79,7 @@ export const ActionCenter: React.FC<{ alerts: DecisionAlert[] }> = ({ alerts }) 
     <div style={{ display: 'grid', gap: 10 }}>
       {alerts.length === 0 ? (
         <div style={{ padding: 16, textAlign: 'center', color: 'var(--color-fg-4)', fontSize: 12 }}>{t('dashboard.actionCenter.noActiveFlags')}</div>
-      ) : alerts.slice(0, 6).map((w, i) => (
-        <div key={i} style={{ paddingLeft: 12, borderLeft: `2px solid ${alertTagColor[w.category] || 'var(--color-primary)'}` }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 2 }}>
-            <Pill tone={alertTagTone[w.category] || 'neutral'}>{w.category}</Pill>
-            <Pill tone={w.priority === 'high' ? 'danger' : w.priority === 'medium' ? 'warning' : 'neutral'}>{w.priority}</Pill>
-          </div>
-          <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--color-fg-1)', marginTop: 2 }}>{w.title}</div>
-          <div style={{ fontSize: 11, color: 'var(--color-fg-3)', lineHeight: 1.45, marginTop: 2 }}>{w.message}</div>
-        </div>
-      ))}
+      ) : alerts.slice(0, 6).map((w, i) => <ActionCenterAlert key={i} alert={w} />)}
     </div>
   </div>
   );

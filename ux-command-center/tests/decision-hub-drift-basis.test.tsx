@@ -108,3 +108,29 @@ describe('DecisionHub drift alerts card — drift_basis states', () => {
     expect(screen.queryByText('No targets to compare')).not.toBeInTheDocument();
   });
 });
+
+describe('DecisionHub alert list — yardstick (Round 7 #1)', () => {
+  it('names the default risk profile on each drift alert', async () => {
+    apiMocks.getDecisionsStats.mockResolvedValue(baseStats({ active_drift_alerts: 1, drift_basis: 'risk_profile' }));
+    apiMocks.getDecisionAlerts.mockResolvedValue({
+      alerts: [{
+        category: 'drift',
+        priority: 'high',
+        title: 'Equity allocation drifted 28.4% from target · vs risk profile: Balanced (default)',
+        message: 'Current: 83.4% | Target: 55.0%',
+        data: {
+          asset_class: 'Equity', asset_class_cn: '股票', drift_pct: 28.4, actual_pct: 83.4, target_pct: 55,
+          basis: 'risk_profile',
+          yardstick: { kind: 'risk_profile', profile_id: 2, profile_name: 'Balanced', is_default: true },
+        },
+      }],
+      counts: { high: 1, medium: 0, low: 0 },
+    });
+
+    renderHub();
+
+    expect(await screen.findByText('Equity allocation drifted 28.4% from target')).toBeInTheDocument();
+    expect(screen.getByTestId('drift-yardstick')).toHaveTextContent('vs risk profile: Balanced (default) — change');
+    expect(screen.getByRole('link', { name: 'change' })).toHaveAttribute('href', '/risk-profiles');
+  });
+});

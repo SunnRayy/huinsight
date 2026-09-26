@@ -32,7 +32,10 @@ of years_to_target — see this module's own docstring above and ADR-026.
 """
 from __future__ import annotations
 
+import logging
 from typing import Optional
+
+logger = logging.getLogger(__name__)
 
 # Lever step sizes — plan-specified sensitivity-grid configuration, NOT
 # result literals (see module docstring).
@@ -47,6 +50,19 @@ _VOLATILITY_FLOOR = 1e-6                              # volatility must never re
 _SAVINGS_PCT_RANGE: tuple[float, float] = (0.0, 60.0)
 _RETURN_PP_RANGE: tuple[float, float] = (0.0, 6.0)
 _VOLATILITY_PP_RANGE: tuple[float, float] = (0.0, 10.0)
+
+
+def _history_sufficiency(db) -> dict:
+    """The shared sufficiency predicate (twr_in_range's). A failure to
+    evaluate it counts as insufficient: the labelled assumption is the honest
+    fallback, an unlabelled trailing figure is not."""
+    from src.validation.data_integrity_gate import twr_history_sufficiency
+
+    try:
+        return twr_history_sufficiency(db)
+    except Exception as e:
+        logger.warning("forecast_levers: history sufficiency check failed: %s", e)
+        return {"sufficient": False, "no_data": False, "reason": f"sufficiency check failed: {e}", "valuation": None}
 
 
 def _clamp(value: float, lo: float, hi: float) -> float:
@@ -114,7 +130,10 @@ def compute_levers(
 
       r (expected_return):
         src.financial_analysis.projection_defaults.suggested_return_basis(db)
-        — trailing annualized TWR, rebalanceable-only basis.
+        — trailing annualized TWR, rebalanceable-only basis — ONLY when
+        data_integrity_gate.twr_history_sufficiency(db) passes; otherwise the
+        configured north_star.long_run_return (and long_run_volatility for
+        sigma), labelled via base.return_basis = "assumption" (Round 7 #2).
 
       sigma (volatility):
         src.financial_analysis.metrics.calculate_portfolio_metrics(db,
@@ -153,18 +172,46 @@ def compute_levers(
     target = goal["target_amount"]
 
     current_nw = _default_net_worth(db)
-    expected_return = suggested_return_basis(db)
 
+    # Round 7 #2: measured return/volatility only when history passes the SAME
+    # sufficiency rule integrity check twr_in_range uses — one predicate, never
+    # a second threshold here (tests/validation/test_history_sufficiency_shared.py).
+    # On a short history the trailing figures are noise (a fresh demo measured
+    # -7.1% / 9.7% vol and showed "Goal not reachable" for any target), so the
+    # projection uses the configured long-run assumption instead, and says so
+    # (base.return_basis + the top-level "assumption" block the UI banners).
+    sufficiency = _history_sufficiency(db)
+    assumption: Optional[dict] = None
     volatility: Optional[float] = None
-    try:
-        include_ids = fetch_included_asset_ids(db, start_date=None)
-        metrics = calculate_portfolio_metrics(
-            db, include_asset_ids=include_ids, exclude_non_balanceable=True
-        )
-        if metrics and metrics.get("volatility_annual") is not None:
-            volatility = float(metrics["volatility_annual"]) / 100.0
-    except Exception:
-        volatility = None
+    if sufficiency["sufficient"]:
+        return_basis = "measured"
+        expected_return = suggested_return_basis(db)
+        try:
+            include_ids = fetch_included_asset_ids(db, start_date=None)
+            metrics = calculate_portfolio_metrics(
+                db, include_asset_ids=include_ids, exclude_non_balanceable=True
+            )
+            if metrics and metrics.get("volatility_annual") is not None:
+                volatility = float(metrics["volatility_annual"]) / 100.0
+        except Exception:
+            volatility = None
+    else:
+        from src.services.verification_config import load_verification_config
+        from src.validation.data_integrity_gate import TWR_CHECK_LOOKBACK_CANDIDATES
+
+        ns = load_verification_config().north_star
+        return_basis = "assumption"
+        expected_return = float(ns.long_run_return)
+        volatility = float(ns.long_run_volatility)
+        assumption = {
+            "expected_return": expected_return,
+            "volatility": volatility,
+            "reason": sufficiency["reason"],
+            # The gate's own window range, for the banner's "needs N-M months".
+            "min_history_days": min(TWR_CHECK_LOOKBACK_CANDIDATES),
+            "max_history_days": max(TWR_CHECK_LOOKBACK_CANDIDATES),
+            "config_keys": ["north_star.long_run_return", "north_star.long_run_volatility"],
+        }
 
     run_rate_monthly, run_rate_status = _contribution_run_rate(db)
     monthly_contribution = (
@@ -199,6 +246,7 @@ def compute_levers(
         "target": target,
         "years_to_target": base_years,
         "crossing_years": crossing_years,
+        "return_basis": return_basis,
     }
 
     # ── Savings lever: fractions of the CURRENT run-rate ────────────────────
@@ -318,6 +366,7 @@ def compute_levers(
         },
         "combined": combined,
         "goal": goal,
+        "assumption": assumption,
     }
     if applied is not None:
         result["applied"] = applied

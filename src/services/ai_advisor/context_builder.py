@@ -288,8 +288,8 @@ class ContextBuilder:
         """Build the investor-profile block from user_profile + active risk profile.
 
         detail controls depth:
-          summary  — goal + risk_tolerance + profile label + top-4 allocations
-          detailed — all 4 philosophy bullets + profile label + all allocations
+          summary  — goal + risk_tolerance + profile label + class-level target allocations
+          detailed — all 4 philosophy bullets + profile label + all sub-class allocations
           full     — same as detailed + portfolio structure narrative
         """
         import json as _json
@@ -346,22 +346,45 @@ class ContextBuilder:
                 label = f"{pname} / {pname_en}" if pname_en else pname
                 lines.append(_label("risk_profile_label", self._language).format(value=label))
 
-                alloc_rows = self._db.execute(
+                # Class names follow the UI's rule (ux-command-center
+                # src/utils/localizedClassName.ts): name_cn only for zh-CN when
+                # it is set, else the English name. Every class is listed, so
+                # the line sums to the profile's 100%. Summary rolls sub-classes
+                # up to their top-level class, the level drift alerts measure
+                # (strategy_reviewer._fetch_uis_target_map); detailed/full list
+                # every sub-class.
+                if detail == "summary":
+                    alloc_sql = """
+                    SELECT CASE WHEN ? = 'zh-CN' AND NULLIF(cls_name_cn, '') IS NOT NULL
+                                THEN cls_name_cn ELSE cls_name END AS label,
+                           SUM(target_pct) AS pct
+                    FROM (
+                        SELECT COALESCE(ptc.name, tc.name) AS cls_name,
+                               CASE WHEN ptc.id IS NOT NULL THEN ptc.name_cn ELSE tc.name_cn END AS cls_name_cn,
+                               rpa.target_pct
+                        FROM risk_profile_allocations rpa
+                        JOIN taxonomy_classes tc ON rpa.class_id = tc.id
+                        LEFT JOIN taxonomy_classes ptc ON tc.parent_id = ptc.id
+                        WHERE rpa.profile_id = ? AND rpa.target_pct > 0
+                    ) s
+                    GROUP BY cls_name, cls_name_cn
+                    ORDER BY pct DESC, label
                     """
-                    SELECT COALESCE(tc.name_cn, tc.name), rpa.target_pct
+                else:
+                    alloc_sql = """
+                    SELECT CASE WHEN ? = 'zh-CN' AND NULLIF(tc.name_cn, '') IS NOT NULL
+                                THEN tc.name_cn ELSE tc.name END AS label,
+                           rpa.target_pct
                     FROM risk_profile_allocations rpa
                     JOIN taxonomy_classes tc ON rpa.class_id = tc.id
                     WHERE rpa.profile_id = ? AND rpa.target_pct > 0
-                    ORDER BY rpa.target_pct DESC
-                    """,
-                    [pid],
-                ).fetchall()
+                    ORDER BY rpa.target_pct DESC, label
+                    """
+                alloc_rows = self._db.execute(alloc_sql, [self._language, pid]).fetchall()
                 if alloc_rows:
-                    # Summary: show top 4 allocations; detailed/full: show all
-                    display_rows = alloc_rows[:4] if detail == "summary" else alloc_rows
                     alloc_sep = _label("allocation_join_sep", self._language)
                     alloc_str = alloc_sep.join(
-                        f"{name} {float(pct):.0f}%" for name, pct in display_rows if pct is not None
+                        f"{name} {float(pct):.0f}%" for name, pct in alloc_rows if pct is not None
                     )
                     lines.append(_label("target_allocation_label", self._language).format(value=alloc_str))
         except Exception:

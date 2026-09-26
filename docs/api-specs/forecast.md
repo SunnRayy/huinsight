@@ -64,8 +64,13 @@ Router: `src/api/routes/forecast.py` (prefix `/forecast`).
 ```typescript
 interface ForecastLeversBase {
   current_nw: number | null;         // liquid (rebalanceable) net worth, CNY
-  expected_return: number | null;    // trailing annualized TWR (decimal, e.g. 0.1083)
-  volatility: number | null;         // trailing annualized volatility (decimal)
+  expected_return: number | null;    // trailing annualized TWR (decimal, e.g. 0.1083), or the long-run assumption — see return_basis
+  volatility: number | null;         // trailing annualized volatility (decimal), or the long-run assumption
+  /** Round 7 #2: where expected_return/volatility came from. "measured" only
+   *  when history passes the SAME sufficiency rule as integrity check
+   *  twr_in_range (data_integrity_gate.twr_history_sufficiency); otherwise
+   *  "assumption" = config north_star.long_run_return / long_run_volatility. */
+  return_basis: "measured" | "assumption";
   /** Volatility-drag-adjusted median return: exp(ln(1+r) - volatility^2/2) - 1.
    *  The headline years_to_target below is computed at THIS rate, not
    *  expected_return. */
@@ -158,6 +163,17 @@ interface ForecastLevers {
   goal: ForecastGoal;
   /** W-2 — present ONLY when at least one slider param was supplied on the request. */
   applied?: ForecastLeversApplied;
+  /** Round 7 #2 — null when base.return_basis is "measured". Always present. */
+  assumption: ForecastAssumption | null;
+}
+
+interface ForecastAssumption {
+  expected_return: number;   // decimal, from config north_star.long_run_return
+  volatility: number;        // decimal, from config north_star.long_run_volatility
+  reason: string;            // the sufficiency rule's own skip reason
+  min_history_days: number;  // shortest lookback the rule accepts (180)
+  max_history_days: number;  // longest lookback it tries (365)
+  config_keys: string[];     // where to edit the assumption
 }
 ```
 
@@ -271,6 +287,11 @@ response are configuration and which are computed from live data:
   `_VOLATILITY_PP_RANGE = (0, 10)`. These are the *sizes of the hypothetical* — "what if
   you saved 25% more" — and are allowed to be literals because they define the
   sensitivity grid itself, not a result.
+- **Configuration (long-run assumption, Round 7 #2)** — `north_star.long_run_return` and
+  `north_star.long_run_volatility` in `config/verification.yaml` (defaults 0.05 / 0.12,
+  reasoning in `config/verification.example.yaml`). Used for `expected_return` /
+  `volatility` ONLY while history fails the `twr_in_range` sufficiency rule;
+  `base.return_basis` and `assumption` say so, and the UI banners it.
 - **Derived (everything else)** — `base.*` (including `crossing_years`), every
   `years_to_target`/`delta_years`, every lever row's adjusted input
   (`monthly_contribution`, `expected_return`, `volatility`), the `applied` echo when

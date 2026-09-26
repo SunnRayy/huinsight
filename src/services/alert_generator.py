@@ -44,13 +44,18 @@ def generate_alerts(db: DatabaseConnector) -> List[Dict]:
         risk_profile_scope = alignment.get("uis_scope_alignment", {})
 
         if strategic_scope:
-            scope, basis, basis_phrase = strategic_scope, "strategic", "strategic target"
+            scope, basis = strategic_scope, "strategic"
         elif risk_profile_scope:
-            scope, basis, basis_phrase = risk_profile_scope, "risk_profile", "your risk-profile target"
+            scope, basis = risk_profile_scope, "risk_profile"
         else:
-            scope, basis, basis_phrase = {}, None, None
+            scope, basis = {}, None
 
         if basis:
+            # Round 7 #1: every drift alert names its yardstick — which targets
+            # it measured against, and whether that risk profile is the seeded
+            # default the user never chose. The frontend renders the localized
+            # line from `data`; `title`/`message` are the English fallback.
+            yardstick = drift_yardstick(db, basis)
             for cls, data in scope.items():
                 if data.get('status') == 'drifting' and data.get('drift_pct') is not None:
                     drift = abs(data['drift_pct'])
@@ -58,9 +63,17 @@ def generate_alerts(db: DatabaseConnector) -> List[Dict]:
                         alerts.append({
                             "category": "drift",
                             "priority": "high" if drift > 10 else "medium",
-                            "title": f"{cls} allocation drifted {drift:.1f}% from {basis_phrase}",
+                            "title": f"{cls} allocation drifted {drift:.1f}% from target · {_yardstick_phrase(yardstick)}",
                             "message": f"Current: {data['actual_pct']:.1f}% | Target: {data['target_pct']:.1f}%",
-                            "data": {"asset_class": cls, "drift_pct": drift, "basis": basis},
+                            "data": {
+                                "asset_class": cls,
+                                "asset_class_cn": _class_name_cn(db, cls),
+                                "drift_pct": drift,
+                                "actual_pct": data['actual_pct'],
+                                "target_pct": data['target_pct'],
+                                "basis": basis,
+                                "yardstick": yardstick,
+                            },
                         })
     except Exception as e:
         logger.warning(f"Alert generation: allocation drift check failed: {e}")
@@ -158,4 +171,65 @@ def drift_basis(db: DatabaseConnector) -> str | None:
         return None
     except Exception as e:
         logger.warning(f"drift_basis check failed: {e}")
+        return None
+
+
+def drift_yardstick(db: DatabaseConnector, basis: str | None) -> dict | None:
+    """What a drift alert measured against (Round 7 #1).
+
+    'strategic' -> {"kind": "strategic"}. 'risk_profile' -> the active
+    profile's id and name, plus `is_default`: True while the active profile
+    has no `activated_by_user_at` (the V193 seed's default, never chosen by
+    the user), False once a person has activated one, None if that can't be
+    read (a database without the V195 column) — the UI then shows no marker
+    rather than guess. Never inferred from the profile's name.
+    """
+    if basis == "strategic":
+        return {"kind": "strategic"}
+    if basis != "risk_profile":
+        return None
+    try:
+        row = db.execute(
+            "SELECT id, name, activated_by_user_at IS NULL FROM risk_profiles "
+            "WHERE is_active = TRUE ORDER BY id LIMIT 1"
+        ).fetchone()
+    except Exception:
+        try:
+            row = db.execute(
+                "SELECT id, name, NULL FROM risk_profiles WHERE is_active = TRUE ORDER BY id LIMIT 1"
+            ).fetchone()
+        except Exception as e:
+            logger.warning(f"drift_yardstick: active risk profile unreadable: {e}")
+            row = None
+    if not row:
+        return {"kind": "risk_profile", "profile_id": None, "profile_name": None, "is_default": None}
+    return {
+        "kind": "risk_profile",
+        "profile_id": int(row[0]),
+        "profile_name": row[1],
+        "is_default": None if row[2] is None else bool(row[2]),
+    }
+
+
+def _yardstick_phrase(yardstick: dict | None) -> str:
+    if not yardstick:
+        return "vs target"
+    if yardstick["kind"] == "strategic":
+        return "vs strategic targets"
+    name = yardstick.get("profile_name") or "active"
+    suffix = " (default)" if yardstick.get("is_default") else ""
+    return f"vs risk profile: {name}{suffix}"
+
+
+def _class_name_cn(db: DatabaseConnector, name: str) -> str | None:
+    """taxonomy_classes.name_cn for a class name, so the UI can localize the
+    alert the same way it localizes every other class label."""
+    try:
+        row = db.execute(
+            "SELECT name_cn FROM taxonomy_classes WHERE name = ? AND name_cn IS NOT NULL "
+            "ORDER BY level, id LIMIT 1",
+            [name],
+        ).fetchone()
+        return row[0] if row else None
+    except Exception:
         return None

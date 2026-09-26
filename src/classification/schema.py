@@ -55,7 +55,8 @@ def create_classification_tables(connector: DatabaseConnector) -> None:
             is_active BOOLEAN DEFAULT FALSE,
             description TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            activated_by_user_at TIMESTAMP
         )
     """)
     

@@ -2796,6 +2796,20 @@ export interface ForecastLeversBase {
     target: number | null;
     years_to_target: number | null;
     crossing_years: ForecastCrossingYears;
+    /** Round 7 #2: 'assumption' while history fails the twr_in_range
+     * sufficiency rule — expected_return/volatility are then the configured
+     * long-run assumption, not measured. Optional: older payloads lack it. */
+    return_basis?: 'measured' | 'assumption';
+}
+
+/** Round 7 #2 — present (non-null) only when base.return_basis is 'assumption'. */
+export interface ForecastAssumption {
+    expected_return: number;
+    volatility: number;
+    reason: string;
+    min_history_days: number;
+    max_history_days: number;
+    config_keys: string[];
 }
 
 /** One row of the "Save more" lever — monthly_contribution is a lever-specific
@@ -2865,4 +2879,5 @@ export interface ForecastLevers {
     /** W-2 — only present when the request supplied at least one slider param. */
     applied?: ForecastLeversApplied;
     goal: ForecastGoal;
+    assumption?: ForecastAssumption | null;
 }

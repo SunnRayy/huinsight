@@ -223,3 +223,87 @@ class TestSeeding:
         assert before == after == 1
 
 
+
+
+class TestRound6PersonaConsistency:
+    """Round 6: the demo persona has to agree with itself on screen."""
+
+    def test_seeds_one_active_retirement_goal_the_forecast_resolves(self, tmp_path):
+        """#2: Your Path read a ¥20M config fallback because the demo had no
+        active retirement goal; the seeded one must be what the resolver picks."""
+        from src.services.goal_resolver import resolve_north_star_goal
+
+        connector, db_path = _make_db(tmp_path)
+        _insert_demo_marker_holding(connector)
+        connector.close()
+
+        assert run(db_path, dry_run=False) == 0
+        assert run(db_path, dry_run=False) == 0  # idempotent: still one row
+
+        seed_goal = load_seed()["retirement_goal"]
+        verify = DatabaseConnector(db_path, read_only=True)
+        try:
+            rows = verify.execute(
+                "SELECT name, goal_type, status FROM goals"
+            ).fetchall()
+            resolved = resolve_north_star_goal(verify)
+        finally:
+            verify.close()
+        assert rows == [(seed_goal["name"], "retirement", "active")]
+        assert resolved["source"] == "goals"
+        assert resolved["fallback_reason"] is None
+        assert resolved["target_amount"] == float(seed_goal["target_amount"])
+        assert resolved["target_date"] == seed_goal["target_date"]
+
+    def test_never_touches_a_goal_the_user_created(self, tmp_path):
+        connector, db_path = _make_db(tmp_path)
+        _insert_demo_marker_holding(connector)
+        connector.execute(
+            """
+            INSERT INTO goals (name, target_amount, target_date, goal_type, status, notes)
+            VALUES ('My own goal', 123456, DATE '2031-01-01', 'retirement', 'active', 'mine')
+            """
+        )
+        connector.close()
+
+        assert run(db_path, dry_run=False) == 0
+
+        verify = DatabaseConnector(db_path, read_only=True)
+        try:
+            mine = verify.execute(
+                "SELECT target_amount, target_date, notes FROM goals WHERE name = 'My own goal'"
+            ).fetchall()
+            total = verify.execute("SELECT COUNT(*) FROM goals").fetchone()[0]
+        finally:
+            verify.close()
+        assert [(float(a), str(d), n) for a, d, n in mine] == [(123456.0, "2031-01-01", "mine")]
+        assert total == 2
+
+    def test_profile_goal_names_the_seeded_target(self):
+        seed = load_seed()
+        goal_text = seed["investor_profile"]["philosophy"]["goal"]
+        target_m = seed["retirement_goal"]["target_amount"] / 1_000_000
+        assert f"CNY {target_m:g}M" in goal_text
+        assert seed["retirement_goal"]["target_date"][:4] in goal_text
+
+    def test_samples_reconcile_the_risk_profile_drift(self):
+        """#1: on a fresh demo the drift alerts flag Equity HIGH against the
+        active risk profile. The samples must say so and explain the call,
+        never claim that nothing has drifted."""
+        seed = load_seed()
+        brief = seed["sample_brief"]["content_json"]
+        review = seed["sample_review"]["content_json"]
+
+        assert any("risk profile" in item["description"] for item in brief["risk_alerts"]["items"])
+        us_core_action = next(a for a in brief["action_items"]["actions"] if a["asset"] == "US core index sleeve")
+        assert "risk profile" in us_core_action["reasoning"]
+
+        us_core_grade = next(
+            s for s in review["advice_accuracy"]["scorecard"] if s["decision"].startswith("Hold the US core sleeve")
+        )
+        assert us_core_grade["accuracy_tier"] != "high"
+        assert "risk profile" in us_core_grade["verdict"]
+
+        dumped = json.dumps([brief, review]).lower()
+        for claim in ("no position has drifted", "no core position drifted", "rule did not trigger"):
+            assert claim not in dumped, claim

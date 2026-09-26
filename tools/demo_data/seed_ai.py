@@ -43,6 +43,9 @@ IDEMPOTENCY:
 - user_profile is the app's existing single-row-by-design table (id=1);
   written with the same ON CONFLICT(id) DO UPDATE upsert pattern
   src.services.settings_manager.save_profile already uses.
+- goals (Round 6): the one active retirement goal the Forecast page reads.
+  No natural unique key, so a marker in `notes` is the key (update the row
+  carrying it, else insert); a goal the user created is never touched.
 - strategy_memos is upserted on its own UNIQUE(memo_date, title) constraint
   (ON CONFLICT DO UPDATE) — the same natural key the app's own
   POST /strategy/memos route relies on. Every row this script writes also
@@ -120,6 +123,15 @@ DEMO_MARKER_ACCOUNT = "IBKR_U0000123"
 # text alone, same intent as SOURCE_MARKER above.
 INSIGHT_TAG_MARKER = "demo-seed:tools/demo_data/seed_ai.py"
 
+# Ownership marker for the seeded `goals` row (Round 6 #2): that table has no
+# natural unique key or source column, so the marker in `notes` is the
+# idempotency key (see seed_retirement_goal).
+GOAL_NOTES_MARKER = "demo-seed:tools/demo_data/seed_ai.py"
+GOAL_NOTES = (
+    "The demo persona's financial-independence goal (investor profile, "
+    f"'Goal'). [{GOAL_NOTES_MARKER}]"
+)
+
 
 REQUIRED_SEED_KEYS = ("investor_profile", "strategy_memos", "sample_brief", "sample_review")
 
@@ -172,6 +184,12 @@ def describe_seed(seed: dict[str, Any]) -> list[str]:
     )
     for key, value in profile["philosophy"].items():
         lines.append(f"  philosophy.{key}: {_truncate(value)}")
+    goal = seed.get("retirement_goal")
+    if goal:
+        lines.append(
+            f"goals (retirement, active): {goal['name']!r} "
+            f"CNY {goal['target_amount']:,} by {goal['target_date']}"
+        )
     for memo in seed["strategy_memos"]:
         lines.append(
             f"strategy_memos: {memo['memo_date']} · {memo['title']} "
@@ -233,6 +251,46 @@ def seed_investor_profile(db: DatabaseConnector, profile: dict[str, Any]) -> Non
     )
 
 
+def seed_retirement_goal(db: DatabaseConnector, goal: dict[str, Any] | None) -> None:
+    """Upsert the persona's one active retirement goal (Round 6 #2).
+
+    `goals` has no natural unique key, so GOAL_NOTES_MARKER in `notes` is the
+    key, the same approach as the ai_reports marker: update the row carrying
+    it, insert one if none does. A goal the user created carries no marker
+    and is never touched. current_amount / monthly_contribution stay 0: they
+    are legacy columns, and the app derives both live
+    (src/api/routes/analytics.py GET /goals).
+    """
+    if not goal:
+        return
+    params = [goal["name"], goal["target_amount"], goal["target_date"]]
+    existing = db.execute(
+        "SELECT id FROM goals WHERE strpos(COALESCE(notes, ''), ?) > 0 ORDER BY id LIMIT 1",
+        [GOAL_NOTES_MARKER],
+    ).fetchone()
+    if existing:
+        db.execute(
+            """
+            UPDATE goals
+            SET name = ?, target_amount = ?, target_date = ?,
+                goal_type = 'retirement', status = 'active', notes = ?,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id = ?
+            """,
+            params + [GOAL_NOTES, existing[0]],
+        )
+    else:
+        db.execute(
+            """
+            INSERT INTO goals
+                (name, target_amount, target_date, current_amount,
+                 monthly_contribution, goal_type, status, notes)
+            VALUES (?, ?, ?, 0, 0, 'retirement', 'active', ?)
+            """,
+            params + [GOAL_NOTES],
+        )
+
+
 def seed_strategy_memos(db: DatabaseConnector, memos: list[dict[str, Any]]) -> None:
     for memo in memos:
         db.execute(
@@ -287,6 +345,7 @@ def seed_memo_registry(db: DatabaseConnector, entries: list[dict[str, Any]]) -> 
 
 def seed_all(db: DatabaseConnector, seed: dict[str, Any]) -> None:
     seed_investor_profile(db, seed["investor_profile"])
+    seed_retirement_goal(db, seed.get("retirement_goal"))
     seed_strategy_memos(db, seed["strategy_memos"])
     seed_memo_registry(db, seed.get("memo_registry", []))
     seed_sample_reports(db, seed)

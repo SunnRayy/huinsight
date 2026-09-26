@@ -24,10 +24,12 @@ class RiskProfileManager:
         ).fetchone()
         new_id = result[0]
         
+        # Created active by a person: that is the user's own choice, so the
+        # drift-alert yardstick must not call it "(default)" (Round 7 #1).
         self.connector.execute("""
-            INSERT INTO risk_profiles (id, name, name_en, is_active, description)
-            VALUES (?, ?, ?, ?, ?)
-        """, [new_id, name, name_en, is_active, description])
+            INSERT INTO risk_profiles (id, name, name_en, is_active, description, activated_by_user_at)
+            VALUES (?, ?, ?, ?, ?, CASE WHEN ? THEN CURRENT_TIMESTAMP END)
+        """, [new_id, name, name_en, is_active, description, bool(is_active)])
         
         return new_id
     
@@ -76,9 +78,12 @@ class RiskProfileManager:
             "UPDATE risk_profiles SET is_active = FALSE, updated_at = CURRENT_TIMESTAMP"
         )
         
-        # Then, activate the target profile
+        # Then, activate the target profile. activated_by_user_at records that
+        # a person chose it — only the API routes call this; the V193 seed
+        # never does, so a fresh install's default stays NULL (Round 7 #1).
         self.connector.execute(
-            "UPDATE risk_profiles SET is_active = TRUE, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
+            "UPDATE risk_profiles SET is_active = TRUE, updated_at = CURRENT_TIMESTAMP, "
+            "activated_by_user_at = CURRENT_TIMESTAMP WHERE id = ?",
             [profile_id]
         )
     

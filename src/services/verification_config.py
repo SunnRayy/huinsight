@@ -73,6 +73,11 @@ class NorthStarSection:
     tim_trailing_months: int = 24
     tim_band_pp: float = 10.0
     glide_horizons_years: tuple[int, ...] = (10, 15, 20)
+    # Round 7 #2: Your Path projects from these when history fails the shared
+    # sufficiency rule (data_integrity_gate.twr_history_sufficiency). Fractions,
+    # not percent. Why these defaults: config/verification.example.yaml.
+    long_run_return: float = 0.05
+    long_run_volatility: float = 0.12
 
 
 @dataclass(frozen=True)
@@ -216,6 +221,8 @@ def load_verification_config(
             glide_horizons_years=tuple(
                 int(y) for y in ns_raw.get("glide_horizons_years", (10, 15, 20))
             ),
+            long_run_return=float(ns_raw.get("long_run_return", 0.05)),
+            long_run_volatility=float(ns_raw.get("long_run_volatility", 0.12)),
         ),
         balance_sheet=BalanceSheetSection(
             non_rebalanceable_history_markers=tuple(

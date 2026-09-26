@@ -29,10 +29,12 @@ investor_profile:
   language: en
   philosophy:
     goal: >-
-      Reach financial independence on a ~CNY 3.5M net worth base, then
-      compound it for long-term wealth preservation across US equities,
-      Chinese funds, gold, and property — without depending on any single
-      market, employer, or currency to get there.
+      Reach financial independence by the end of 2038: CNY 5M in liquid,
+      investable assets (about 25 years of the household's spending), built
+      on today's ~CNY 3.5M net worth base. Then compound it for long-term
+      wealth preservation across US equities, Chinese funds, gold, and
+      property, without depending on any single market, employer, or
+      currency to get there.
     horizon: >-
       10-15 years to financial independence for the household as a whole.
       Individual satellite positions (CN thematic/sector funds, each Amazon
@@ -79,6 +81,26 @@ investor_profile:
       every 12 vested shares); anything held beyond that standing plan
       needs the discipline check from the core-weakness note above before
       it counts as a deliberate decision rather than inertia.
+
+# ---------------------------------------------------------------------------
+# retirement_goal — the one active `goals` row the Forecast page's Your Path
+# resolves (src/services/goal_resolver.py: status 'active', goal_type
+# 'retirement'). Without it the page falls back to the config target
+# (config/verification.example.yaml north_star, ¥20M) and says so, which
+# contradicts the profile above.
+#
+# The figure is this file's editorial choice for a fictional persona, derived
+# from persona.yaml, not a measurement: spending midpoints (essential 11,500
+# + discretionary 5,000 CNY/month = 198,000/year) x 25 (the 4% rule of thumb)
+# = 4.95M, rounded to 5M. The Forecast compares it against LIQUID net worth
+# (north_star_glide._default_net_worth), which is why the profile says
+# "liquid, investable assets" rather than net worth. The date sits inside the
+# profile's 10-15 year horizon.
+# ---------------------------------------------------------------------------
+retirement_goal:
+  name: "Financial independence"
+  target_amount: 5000000
+  target_date: "2038-12-31"
 
 # ---------------------------------------------------------------------------
 # strategy_memos — 3 memos, dated after the persona's Schwab snapshot
@@ -298,10 +320,16 @@ sample_brief:
         profile is intact: Tier 1 core & stability, Tier 2 core growth (the
         US index sleeve plus 110020), and Tier 3 satellite & concentrated
         positions (AAPL, BRK-B, CN thematic funds, paper gold, Amazon RSU).
+        Two yardsticks disagree, though. The drift alerts measure asset
+        classes against the active risk profile ("Balanced", the app's
+        default), and against it equity is well overweight and fixed income
+        well underweight. The household's own rules measure each core
+        position against its band, and none of those has moved 5pp. Both
+        are true at once; the actions below say which one governs today.
       positions:
         - name: "US core index sleeve (VOO / VTI / SCHD / BND)"
-          status: hold
-          comment: "Within target bands per the 2026-06-05 US Equity Sleeve Review memo — no rebalance trigger."
+          status: watch
+          comment: "Each position is inside its own band per the 2026-06-05 US Equity Sleeve Review memo, so the per-position rule has not triggered. At the class level, equity is overweight against the risk profile (see the HIGH drift alert), which is why this is a watch, not a plain hold."
         - name: "AAPL + BRK-B satellites"
           status: watch
           comment: "Combined weight sits inside the 20%-of-equity-sleeve cap from the same memo; the standing directive is to re-check this pair every review cycle."
@@ -316,6 +344,9 @@ sample_brief:
         Sample risk summary grounded in the seeded strategy memos'
         falsification conditions rather than any live drawdown reading.
       items:
+        - title: "Equity overweight against the risk profile"
+          severity: high
+          description: "The drift alerts flag Equity over and Fixed Income under the active risk profile's class targets. That profile is the app's default, not a plan this household wrote. Its own rule (per-position 5pp bands, 2026-06-05 memo) has not triggered. The gap between the two is the real finding: either adopt a risk profile that matches the tier structure, or accept the class targets and plan a fixed-income top-up."
         - title: "CN satellite concentration"
           severity: medium
           description: "161725 and its CN satellite siblings carry explicit falsification thresholds (sector regulation change, active-share drift, NAV concentration) — none are triggered by price movement alone."
@@ -333,7 +364,7 @@ sample_brief:
       actions:
         - asset: "US core index sleeve"
           action: hold
-          reasoning: "No position has drifted more than 5pp from its target band; the standing rebalance rule has not triggered."
+          reasoning: "Equity is overweight against the risk profile (HIGH drift alert), but per the 2026-06-05 memo the per-position band rule governs this sleeve, and no position has moved more than 5pp from its band. So no trim yet. Flagged for the next review, which has to decide which set of targets the household follows."
         - asset: "AAPL + BRK-B"
           action: hold
           reasoning: "Combined satellite weight remains inside the 20% cap; trim only if that changes."
@@ -346,6 +377,9 @@ sample_brief:
         strategy memos already define — this sample does not invent new
         ones.
       watchlist:
+        - item: "Equity vs fixed income at the class level"
+          trigger: "Still outside the risk profile's class targets at the next review, with no decision on which targets govern"
+          level: "Class weight vs the active risk profile, not a price level"
         - item: "110020 (CSI 300 core tracker) sizing"
           trigger: "Drifts more than 5pp from its target band for two consecutive monthly reviews"
           level: "Target allocation band, not a price level"
@@ -375,7 +409,7 @@ sample_review:
         - asset: "US core index sleeve (VOO/VTI/SCHD/BND)"
           action: hold
           date: "2026-08-14"
-          logic: "No core position drifted more than 5pp from target; the standing rebalance rule did not trigger this period."
+          logic: "Held under the per-position band rule from the 2026-06-05 memo: no core position moved more than 5pp from its band. At the class level, equity stayed overweight against the active risk profile all period, and the hold did not address that."
       grade_breakdown: {}
     advice_accuracy:
       narrative: >-
@@ -383,8 +417,8 @@ sample_review:
         trade history behind the demo persona to grade against.
       scorecard:
         - decision: "Hold the US core sleeve through the review period"
-          accuracy_tier: high
-          verdict: "Consistent with the standing rebalance rule; no core position drifted more than 5pp from target."
+          accuracy_tier: medium
+          verdict: "Right by the rule the household wrote: no core position left its band. But the drift alerts showed equity overweight and fixed income underweight against the active risk profile for the whole period, and the hold never answered that. Correct under one set of targets, unexamined under the other."
         - decision: "Continue the standing RSU sell-to-cover plan instead of discretionary trimming"
           accuracy_tier: high
           verdict: "Matches the household's documented core weakness (under-trimming after a vest) and the pre-committed rule written to guard against it."
@@ -402,13 +436,16 @@ sample_review:
       lessons:
         - "Pre-committed rules (the RSU sell-to-cover plan, the AAPL+BRK-B 20% cap) work because they remove in-the-moment discretion at the exact points — a big rally or a big vest — where the household's documented core weakness would otherwise take over."
       improvements:
+        - "Decide which targets govern. The per-position bands and the risk profile's class targets disagree about equity, so either adopt a risk profile that matches the tier structure or accept the class targets and plan a fixed-income top-up."
         - "Next review: re-check 110020 and the CN satellite funds against their falsification conditions before any new capital enters that sleeve."
     rule_updates:
       narrative: >-
-        No new rules proposed in this sample — the existing falsification
-        conditions and sizing bands from the strategy memos already cover
-        this period's decisions.
-      suggestions: []
+        One rule gap this period: the strategy memos set per-position bands
+        but no class-level target, so the drift alerts fall back to the
+        app's default risk profile. The falsification conditions and sizing
+        bands otherwise cover this period's decisions.
+      suggestions:
+        - "Write class-level targets that follow from the three-tier structure, and make them the active risk profile, so drift alerts and the band rule measure against the same plan."
 
 # ---------------------------------------------------------------------------
 # insights_lifecycle — Phase 3c (Round 5 finding #3). Populates ai_insights

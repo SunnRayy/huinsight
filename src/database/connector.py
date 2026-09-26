@@ -1850,6 +1850,37 @@ class DatabaseConnector:
             """,
         )
 
+        # ── V195: risk_profiles.activated_by_user_at (Round 7 #1) ─────────────
+        # Drift alerts name the risk profile they measure against and mark it
+        # "(default)" until the user has chosen one. That needs a stored fact,
+        # not a guess from the profile's name. RiskProfileManager sets it on
+        # every activation through the API; the V193 seed never does.
+        #
+        # Backfill uses evidence the table already holds: activate_profile()
+        # bumps updated_at on every row, while the V193 seed writes
+        # updated_at = created_at. An active profile with updated_at >
+        # created_at was therefore activated by a person. One created active
+        # by hand and never re-activated stays NULL; activating it again in
+        # the UI records it.
+        already_v195 = self.execute(
+            "SELECT 1 FROM schema_version WHERE version = 195"
+        ).fetchone()
+        if not already_v195:
+            if self._run_migration(
+                "V195 risk_profiles.activated_by_user_at",
+                "ALTER TABLE risk_profiles ADD COLUMN IF NOT EXISTS activated_by_user_at TIMESTAMP",
+            ) and self._run_migration(
+                "V195 backfill activated_by_user_at",
+                """
+                UPDATE risk_profiles
+                SET activated_by_user_at = updated_at
+                WHERE is_active = TRUE
+                  AND activated_by_user_at IS NULL
+                  AND updated_at > created_at
+                """,
+            ):
+                self._record_migration(195, "V195 risk_profiles.activated_by_user_at")
+
     def _seed_default_risk_profiles(self) -> bool:
         """Insert any missing default risk profiles. Returns True on success.
 

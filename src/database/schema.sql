@@ -721,7 +721,10 @@ CREATE TABLE IF NOT EXISTS risk_profiles (
     is_active BOOLEAN DEFAULT FALSE,
     description TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    -- When a person activated this profile. NULL on the seeded default
+    -- (V193), so drift alerts can say "(default)" until the user picks one.
+    activated_by_user_at TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS risk_profile_allocations (

@@ -62,8 +62,8 @@ def test_generate_alerts_falls_back_to_risk_profile_targets_on_fresh_install(fre
     assert drift_alerts, "expected at least one drift alert against the active risk profile"
     for alert in drift_alerts:
         assert alert["data"]["basis"] == "risk_profile"
-        assert "risk-profile target" in alert["title"], alert["title"]
-        assert "strategic target" not in alert["title"], alert["title"]
+        assert "vs risk profile: Balanced (default)" in alert["title"], alert["title"]
+        assert "strategic" not in alert["title"], alert["title"]
 
 
 def test_generate_alerts_prefers_strategic_targets_when_present(fresh_db):
@@ -89,7 +89,49 @@ def test_generate_alerts_prefers_strategic_targets_when_present(fresh_db):
     assert drift_alerts, "expected drift against the strategic target too (100% concentration)"
     for alert in drift_alerts:
         assert alert["data"]["basis"] == "strategic"
-        assert alert["title"].endswith("from strategic target"), alert["title"]
+        assert alert["title"].endswith("vs strategic targets"), alert["title"]
+        assert alert["data"]["yardstick"] == {"kind": "strategic"}
+
+
+def test_drift_alert_names_the_seeded_default_profile(fresh_db):
+    """Round 7 #1: the fresh-install profile is V193's default, which the user
+    never chose — every drift alert must say which profile and that it is the
+    default, from the stored flag rather than the profile's name."""
+    _seed_concentrated_us_equity_holding(fresh_db)
+    active_id, active_name = fresh_db.execute(
+        "SELECT id, name FROM risk_profiles WHERE is_active = TRUE"
+    ).fetchone()
+
+    drift_alerts = [a for a in generate_alerts(fresh_db) if a["category"] == "drift"]
+
+    assert drift_alerts
+    for alert in drift_alerts:
+        assert alert["data"]["yardstick"] == {
+            "kind": "risk_profile",
+            "profile_id": active_id,
+            "profile_name": active_name,
+            "is_default": True,
+        }
+        for key in ("asset_class", "asset_class_cn", "drift_pct", "actual_pct", "target_pct"):
+            assert key in alert["data"], key
+
+
+def test_default_marker_clears_once_the_user_activates_a_profile(fresh_db):
+    """Activating a profile through the manager (the API's only path) records
+    the choice — even re-activating the same seeded profile, and even with the
+    same name, the marker goes."""
+    from src.classification.risk_profile_manager import RiskProfileManager
+
+    _seed_concentrated_us_equity_holding(fresh_db)
+    active_id = fresh_db.execute("SELECT id FROM risk_profiles WHERE is_active = TRUE").fetchone()[0]
+
+    RiskProfileManager(fresh_db).activate_profile(active_id)
+
+    drift_alerts = [a for a in generate_alerts(fresh_db) if a["category"] == "drift"]
+    assert drift_alerts
+    for alert in drift_alerts:
+        assert alert["data"]["yardstick"]["is_default"] is False
+        assert "(default)" not in alert["title"], alert["title"]
 
 
 def test_drift_basis_is_none_when_neither_scope_has_targets():

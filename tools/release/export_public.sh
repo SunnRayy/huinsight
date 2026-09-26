@@ -112,3 +112,6 @@ echo "[export_public] running leak_gate.py --strict ..."
 "$PYTHON_BIN" "$HERE/leak_gate.py" --paths "$STAGING" --strict
 
 echo "[export_public] done. Staging tree: $STAGING"
+echo "[export_public] NOT DONE until the push is verified: after pushing, run"
+echo "  bash tools/release/verify_public_push.sh $STAGING <public_repo_url> <branch> [base]"
+echo "  (fresh clone of the public repo: published tree == this export, changed tests pass)"

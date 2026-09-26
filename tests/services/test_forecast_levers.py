@@ -29,6 +29,26 @@ from src.services.forecast_levers import compute_levers
 from src.services.verification_config import NorthStarSection, VerificationConfig
 
 
+_SUFFICIENT = {"sufficient": True, "no_data": False, "reason": None, "valuation": {}}
+_INSUFFICIENT = {
+    "sufficient": False,
+    "no_data": False,
+    "reason": "Like-for-like basis too thin at a 180-day lookback",
+    "valuation": None,
+}
+
+
+@pytest.fixture(autouse=True)
+def _measured_history():
+    """Most tests here are about the lever engine on MEASURED inputs, so the
+    shared sufficiency predicate (data_integrity_gate.twr_history_sufficiency)
+    is stubbed as passing — building a year of like-for-like history is
+    orthogonal to them. The short-history tests below override it (Round 7
+    #2: the long-run assumption path)."""
+    with patch("src.validation.data_integrity_gate.twr_history_sufficiency", return_value=_SUFFICIENT):
+        yield
+
+
 def _make_db() -> DatabaseConnector:
     conn = DatabaseConnector(":memory:")
     initialize_schema(conn)
@@ -486,3 +506,46 @@ def test_compute_levers_never_reads_config_target_directly():
         result = compute_levers(conn)
 
     assert result["base"]["target"] == pytest.approx(27_500_000.0)
+
+
+# ── Round 7 #2: long-run assumption when history is too short ───────────────
+
+def test_short_history_projects_from_the_configured_long_run_assumption():
+    """History fails the twr_in_range sufficiency rule -> the measured
+    trailing figures are NOT used (even when available), the configured
+    assumption is, and the response says so."""
+    conn = _make_db()
+    _seed_net_worth(conn, 1_200_000.0)
+    _seed_run_rate(conn, 10_000.0)
+
+    cfg = VerificationConfig(north_star=NorthStarSection(long_run_return=0.05, long_run_volatility=0.12))
+    p_return, p_vol = _patch_return_and_volatility(-0.071, 9.7)
+    with p_return, p_vol, patch(
+        "src.services.verification_config.load_verification_config", return_value=cfg
+    ), patch("src.validation.data_integrity_gate.twr_history_sufficiency", return_value=_INSUFFICIENT):
+        result = compute_levers(conn)
+
+    base = result["base"]
+    assert base["return_basis"] == "assumption"
+    assert base["expected_return"] == pytest.approx(0.05)
+    assert base["volatility"] == pytest.approx(0.12)
+    assert base["years_to_target"] is not None
+    assumption = result["assumption"]
+    assert assumption["expected_return"] == pytest.approx(0.05)
+    assert assumption["volatility"] == pytest.approx(0.12)
+    assert assumption["reason"] == _INSUFFICIENT["reason"]
+    assert (assumption["min_history_days"], assumption["max_history_days"]) == (180, 365)
+
+
+def test_sufficient_history_uses_measured_figures_and_no_assumption():
+    conn = _make_db()
+    _seed_net_worth(conn, 1_200_000.0)
+    _seed_run_rate(conn, 10_000.0)
+
+    p_return, p_vol = _patch_return_and_volatility(0.08, 15.0)
+    with p_return, p_vol:
+        result = compute_levers(conn)
+
+    assert result["base"]["return_basis"] == "measured"
+    assert result["base"]["expected_return"] == pytest.approx(0.08)
+    assert result["assumption"] is None

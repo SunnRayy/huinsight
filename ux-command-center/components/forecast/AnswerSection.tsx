@@ -47,6 +47,55 @@ function fmtBoundYear(y: number | null, rangeKnown: boolean, horizonYears: numbe
     return y.toFixed(1);
 }
 
+const DAYS_PER_MONTH = 365 / 12;
+
+/**
+ * Round 7 #2 — the headline's "this is an assumption" banner. Shown whenever
+ * the projection uses the configured long-run return/volatility because the
+ * portfolio's history fails the same sufficiency rule as integrity check
+ * twr_in_range. Plain text on the card, not a tooltip. "Edit assumption"
+ * opens where to change it: the values live in config (there is no settings
+ * surface for them), so the honest edit path is the config keys.
+ */
+function AssumptionBanner({ assumption }: Readonly<{ assumption: NonNullable<ForecastLevers['assumption']> }>) {
+    const { t } = useTranslation('reports');
+    const [editOpen, setEditOpen] = useState(false);
+    const pct = (n: number, digits: number) => `${(n * 100).toFixed(digits)}%`;
+    const editButton = (
+        <button
+            type="button"
+            onClick={() => setEditOpen(v => !v)}
+            aria-expanded={editOpen}
+            style={{ background: 'none', border: 'none', padding: 0, font: 'inherit', fontWeight: 700, color: 'inherit', textDecoration: 'underline', cursor: 'pointer' }}
+        />
+    );
+    return (
+        <div className="sig sig--warning" data-testid="forecast-assumption-banner" style={{ display: 'block', marginBottom: 12, padding: '8px 12px', lineHeight: 1.5 }}>
+            <Trans
+                t={t}
+                i18nKey="forecast.answerSection.assumptionBanner"
+                values={{
+                    minMonths: Math.round(assumption.min_history_days / DAYS_PER_MONTH),
+                    maxMonths: Math.round(assumption.max_history_days / DAYS_PER_MONTH),
+                    ret: pct(assumption.expected_return, 1),
+                    vol: pct(assumption.volatility, 0),
+                }}
+                components={{ edit: editButton }}
+            />
+            {editOpen && (
+                <div style={{ marginTop: 6, fontWeight: 400 }}>
+                    <Trans
+                        t={t}
+                        i18nKey="forecast.answerSection.assumptionEditHelp"
+                        values={{ keys: assumption.config_keys.join(', ') }}
+                        components={{ code: <code /> }}
+                    />
+                </div>
+            )}
+        </div>
+    );
+}
+
 export const AnswerSection: React.FC<AnswerSectionProps> = ({ levers, loading, onGoToGoals }) => {
     const { t } = useTranslation('reports');
     const formatMoney = useFormatCurrency();
@@ -57,6 +106,9 @@ export const AnswerSection: React.FC<AnswerSectionProps> = ({ levers, loading, o
     const goal = levers?.goal ?? null;
     const target = base?.target ?? null;
     const headlineYears = base?.years_to_target ?? null;
+    // Round 7 #2: non-null only while history is too short to trust a measured
+    // return — every number on this card is then assumption-based.
+    const assumption = base?.return_basis === 'assumption' ? (levers?.assumption ?? null) : null;
 
     const crossingYears = base?.crossing_years ?? null;
     const rangeKnown = target != null && !!crossingYears;
@@ -113,6 +165,7 @@ export const AnswerSection: React.FC<AnswerSectionProps> = ({ levers, loading, o
             {!levers && !loading && (
                 <div style={{ fontSize: 13, color: 'var(--color-fg-3)' }}>{t('forecast.answerSection.unavailable')}</div>
             )}
+            {levers && assumption && <AssumptionBanner assumption={assumption} />}
             {levers && (
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 20, flexWrap: 'wrap' }}>
                     <div>
@@ -146,7 +199,11 @@ export const AnswerSection: React.FC<AnswerSectionProps> = ({ levers, loading, o
                             value={base?.monthly_contribution != null ? <>{formatMoney(base.monthly_contribution)}{t('forecast.answerSection.perMonth')}</> : '—'}
                             nowrap
                         />
-                        <Chip label={t('forecast.answerSection.chipReturnVol')} value={`${fmtPct(base?.expected_return)} / ${fmtPct(base?.volatility)}`} nowrap />
+                        <Chip
+                            label={assumption ? t('forecast.answerSection.chipReturnVolAssumed') : t('forecast.answerSection.chipReturnVol')}
+                            value={`${fmtPct(base?.expected_return)} / ${fmtPct(base?.volatility)}`}
+                            nowrap
+                        />
                     </div>
                 </div>
             )}

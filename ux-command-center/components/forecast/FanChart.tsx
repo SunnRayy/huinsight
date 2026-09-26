@@ -80,6 +80,11 @@ export const FanChart: React.FC<FanChartProps> = ({ levers, projection, loading 
     const { convertFromCNY, currencySymbol } = useCurrency();
 
     const base = levers?.base ?? null;
+    // Round 7 #2: an assumption-based projection (history too short to trust a
+    // measured return) must not look like a history-based one — hatched
+    // warning-tone bands, a dashed median, and a label in the header.
+    const assumed = base?.return_basis === 'assumption';
+    const bandColor = assumed ? 'var(--color-warning)' : 'var(--color-primary)';
     const target = base?.target ?? null;
     const currentNw = base?.current_nw ?? null;
 
@@ -141,10 +146,13 @@ export const FanChart: React.FC<FanChartProps> = ({ levers, projection, loading 
                     {t('forecast.fanChart.title')}
                 </span>
                 <div className="card-head-actions">
+                    {assumed && (
+                        <span className="sig sig--warning" data-testid="fan-assumption-label">{t('forecast.fanChart.assumptionBased')}</span>
+                    )}
                     <span className="legend">
-                        <span className="lg-item"><span className="lg-dot" style={{ background: 'rgba(59,130,246,.3)' }} />{t('forecast.fanChart.p10p90')}</span>
-                        <span className="lg-item"><span className="lg-dot" style={{ background: 'rgba(59,130,246,.55)' }} />{t('forecast.fanChart.p25p75')}</span>
-                        <span className="lg-item"><span className="lg-dot" style={{ background: 'var(--color-primary)' }} />{t('forecast.fanChart.median')}</span>
+                        <span className="lg-item"><span className="lg-dot" style={assumed ? { background: bandColor, opacity: 0.3 } : { background: 'rgba(59,130,246,.3)' }} />{t('forecast.fanChart.p10p90')}</span>
+                        <span className="lg-item"><span className="lg-dot" style={assumed ? { background: bandColor, opacity: 0.55 } : { background: 'rgba(59,130,246,.55)' }} />{t('forecast.fanChart.p25p75')}</span>
+                        <span className="lg-item"><span className="lg-dot" style={{ background: bandColor }} />{t('forecast.fanChart.median')}</span>
                     </span>
                 </div>
             </div>
@@ -160,6 +168,10 @@ export const FanChart: React.FC<FanChartProps> = ({ levers, projection, loading 
                             <clipPath id="fanclip">
                                 <rect x={72} y={20} width={1104} height={352} />
                             </clipPath>
+                            <pattern id="fanAssumptionHatch" patternUnits="userSpaceOnUse" width={8} height={8} patternTransform="rotate(45)">
+                                <rect width={8} height={8} fill="var(--color-warning)" fillOpacity={0.14} />
+                                <line x1={0} y1={0} x2={0} y2={8} stroke="var(--color-warning)" strokeOpacity={0.45} strokeWidth={2} />
+                            </pattern>
                         </defs>
 
                         {/* Y gridlines + labels (log axis) */}
@@ -181,9 +193,16 @@ export const FanChart: React.FC<FanChartProps> = ({ levers, projection, loading 
                         <text x={1176} y={394} textAnchor="end" fontFamily="var(--font-mono)" fontSize={11} fill="var(--color-fg-4)">{t('forecast.fanChart.years')}</text>
 
                         <g clipPath="url(#fanclip)">
-                            <path d={bandPath(p10, p90)} fill="var(--color-primary)" fillOpacity={0.16} stroke="none" />
-                            <path d={bandPath(p25, p75)} fill="var(--color-primary)" fillOpacity={0.32} stroke="none" />
-                            <polyline points={medianPoints} fill="none" stroke="var(--color-primary)" strokeWidth={2.6} />
+                            <path
+                                d={bandPath(p10, p90)}
+                                fill={assumed ? 'url(#fanAssumptionHatch)' : 'var(--color-primary)'}
+                                fillOpacity={assumed ? 1 : 0.16}
+                                stroke="none"
+                                data-testid="fan-band-outer"
+                                data-basis={assumed ? 'assumption' : 'measured'}
+                            />
+                            <path d={bandPath(p25, p75)} fill={bandColor} fillOpacity={assumed ? 0.22 : 0.32} stroke="none" />
+                            <polyline points={medianPoints} fill="none" stroke={bandColor} strokeWidth={2.6} strokeDasharray={assumed ? '8 5' : undefined} />
 
                             {target != null && (
                                 <>

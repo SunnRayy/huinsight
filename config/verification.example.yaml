@@ -68,6 +68,28 @@ north_star:
   tim_trailing_months: 24     # trailing window for the time-in-market ratio
   tim_band_pp: 10.0           # months count as "in market" if weight >= target - this many pp
   glide_horizons_years: [10, 15, 20]
+  # Long-run assumption for Forecast > Your Path (Round 7 #2). Used ONLY while
+  # the portfolio's history fails the same sufficiency rule as integrity check
+  # twr_in_range (6-12 months of like-for-like history covering at least half
+  # of current value; data_integrity_gate.twr_history_sufficiency). Once that
+  # passes, Your Path switches to the measured trailing return and volatility
+  # on its own and drops the "long-run assumption" banner. Fractions, nominal
+  # CNY, annual.
+  #
+  # Why these defaults (a judgement, not taken from any published
+  # capital-market-assumptions table):
+  # - long_run_return 0.05: deliberately modest for a diversified portfolio.
+  #   It sits below what an equity-heavy portfolio has returned over long
+  #   periods, so if it is wrong it errs toward "later", the safer mistake
+  #   for a planning number. The projection compounds at the median rate
+  #   (return minus about half the variance): about 4.25% a year here.
+  # - long_run_volatility 0.12: roughly a balanced mix, the shape of the
+  #   default "Balanced" risk profile (55% equity). An equity-heavy portfolio
+  #   will usually swing more than this; raise it and the band widens and
+  #   the median path slows.
+  # Edit both to match your own view; restart the backend to apply.
+  long_run_return: 0.05
+  long_run_volatility: 0.12
 
 # Asset-level default bucket classification (D1). Per-trade rule_bucket on
 # trade_logs is authoritative once set; this map only supplies defaults for

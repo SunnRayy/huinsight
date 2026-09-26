@@ -163,7 +163,8 @@
       "years": "年",
       "goal": "目标 {{value}}",
       "today": "今天",
-      "medianYears": "中位数 {{years}}y"
+      "medianYears": "中位数 {{years}}y",
+      "assumptionBased": "基于长期假设的区间——尚非你的实测历史"
     },
     "yourPath": {
       "errors": {
@@ -239,7 +240,10 @@
       "chipLiquidNw": "流动净资产",
       "chipContribution": "资金投入",
       "perMonth": "/月",
-      "chipReturnVol": "收益率 / 波动率"
+      "chipReturnVol": "收益率 / 波动率",
+      "assumptionBanner": "历史数据不足（约需 {{minMonths}}–{{maxMonths}} 个月）——当前按长期假设预测：年化收益 {{ret}}、波动 {{vol}}。<edit>修改假设</edit>",
+      "assumptionEditHelp": "该假设位于 <code>config/verification.yaml</code>（若尚无此文件，请复制 <code>config/verification.example.yaml</code>）：<code>{{keys}}</code>（小数，例如 0.05 = 5%）。修改后请重启后端。如只想试算其他数值而不改动它，请使用下方的「高级：自定义模拟」。历史数据足够后，会自动改用实测数据。",
+      "chipReturnVolAssumed": "收益 / 波动（假设）"
     }
   },
   "verification": {
