@@ -1,0 +1,1 @@
+src/api/routes/data.py:332:            WHERE snapshot_date = (SELECT MAX(snapshot_date) FROM current_allocations)

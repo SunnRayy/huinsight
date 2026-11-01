@@ -1,0 +1,2 @@
+src/api/routes/settings.py:1112:        import litellm  # noqa: PLC0415, LLMClient-bypass
+src/api/routes/settings.py:1113:        litellm.completion(

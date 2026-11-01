@@ -1,0 +1,235 @@
+{
+  "title": "Performance Analysis",
+  "liveFeed": "Live Feed: {{date}}",
+  "loadingEllipsis": "Loading...",
+  "errorLoadingData": "Error loading data.",
+  "insufficientData": "Insufficient data",
+  "exportAiContext": "Export AI Context",
+  "errors": {
+    "overview": "Unable to load overview data. Please refresh.",
+    "returns": "Unable to load returns data. Please refresh.",
+    "attribution": "Unable to load attribution data. Please refresh.",
+    "risk": "Unable to load risk metrics data. Please refresh."
+  },
+  "periods": {
+    "allTime": "All Time",
+    "last36m": "Last 36M",
+    "last12m": "Last 12M"
+  },
+  "tabs": {
+    "overview": "Overview",
+    "returns": "Returns",
+    "attribution": "Attribution",
+    "risk": "Risk Metrics"
+  },
+  "waterfall": {
+    "total": "Total",
+    "lifetimePl": "Lifetime P&L"
+  },
+  "overview": {
+    "lifetimePlContribution": "Lifetime P&L Contribution",
+    "cumulative": "(Cumulative)",
+    "totalLifetimePl": "Total Lifetime P&L",
+    "portfolioValue": "Portfolio Value",
+    "unrealizedPl": "Unrealized P&L",
+    "realizedPlFifo": "Realized P&L (FIFO)",
+    "lifetimePl": "Lifetime P&L",
+    "assetsTracked": "{{count}} assets tracked · Last sync: {{date}}",
+    "performanceByClass": "Performance by Asset Class",
+    "realizedPl": "Realized P&L",
+    "topBottomPerformers": "Top / Bottom Investment Performers",
+    "rankTop": "Top {{n}}",
+    "rankBottom": "Bot {{n}}",
+    "columns": {
+      "class": "Class",
+      "value": "Value",
+      "costBasis": "Cost Basis",
+      "returnPct": "Return %",
+      "weightPct": "Weight %",
+      "rank": "Rank",
+      "asset": "Asset",
+      "cost": "Cost",
+      "marketValue": "Market Value"
+    }
+  },
+  "returns": {
+    "netWorthOverTime": "Gross assets over time",
+    "grossAssetsScope": "Household assets before liabilities; {{start}} to {{end}}. Historical monthly dates are labels, followed by the latest holdings snapshot. This chart has a wider scope than investment TWR.",
+    "investmentBridge": "Investment account value bridge (estimate)",
+    "bridgeScope": "Same investment account boundary, {{start}} to {{end}}",
+    "openingValue": "Opening value",
+    "netContribution": "Net deposits minus withdrawals",
+    "investmentGain": "Investment gain / loss",
+    "closingValue": "Closing value",
+    "bridgeNote": "Opening value + net deposits minus withdrawals + investment gain = closing value. Net contributions are external money added during this period, not cumulative purchases or remaining cost basis. TWR also adjusts for flow timing.",
+    "unavailableReasons": {
+      "default": "Investment return is unavailable because a complete matching value and flow series is missing.",
+      "source_not_imported": "Import a funding workbook with TWR flows and estimate metadata.",
+      "missing_twr_tabs": "The funding workbook is missing TWR flow or estimate tabs. Reimport both tabs together.",
+      "invalid_twr_tabs": "The funding workbook has invalid TWR inputs. Correct both tabs and reimport.",
+      "valuation_changed_or_incomplete": "Investment valuations changed or are incomplete. Check the Financial Summary and reimport the matching funding workbook.",
+      "coverage_or_valuation_incomplete": "Investment valuation dates or account values are incomplete for this return window."
+    },
+    "axisWan": "¥{{value}}w",
+    "noHistoryData": "No history data available.",
+    "twrCumulative": "TWR (window)",
+    "twrCumulativeDesc": "Growth over the selected window.",
+    "twrYtd": "TWR YTD",
+    "twrYtdDesc": "Growth since year start.",
+    "twr1y": "TWR 1Y",
+    "twr1yDesc": "Growth over the latest 12 months.",
+    "twrEstimated": "estimate",
+    "twrEstimateDetails": "{{start}} to {{end}}; month-end values and some cash settlement dates are approximate.",
+    "twrUnavailable": "Complete investment values or external flows are missing; return unavailable.",
+    "mwrXirr": "XIRR (annualized)",
+    "mwrXirrDesc": "Your money-weighted annual return.",
+    "candidateNote": "Unreviewed estimate: inputs may include assumptions about opening balances, cash-flow dates and account cash coverage. The dates shown are the calculation window, not necessarily the full investment history.",
+    "xirrAmbiguity": "A rate was found, but additional XIRR solutions have not been ruled out.",
+    "xirrNoSolution": "A reliable XIRR solution is unavailable for these cash flows.",
+    "liquidAssetsOverTime": "Assets excluding illiquid holdings",
+    "illiquidIncluded": "Includes illiquid assets. This chart follows the portfolio scope switch; the return calculations below use their own fixed investment-account scope.",
+    "illiquidExcluded": "Excludes non-rebalanceable assets (such as property and insurance). Bank deposits and bank wealth/bonds can still be included here; they are outside the return calculation below.",
+    "bridgeAccounts": "Covers CN funds, Schwab, IBKR, vested RSUs and paper gold, including account cash captured in the input valuations. Excludes household bank deposits, bank wealth/bonds, pension, insurance and property. These are historical account values, not today’s total investable assets; the illiquid-assets switch does not change this calculation.",
+    "accountChip": "Investment accounts · data through {{asOf}} · estimate",
+    "methodology": "Methodology & data quality",
+    "accountValue": "Investment account value",
+    "amountInvested": "Net amount invested",
+    "methodDetails": "Monthly Modified Dietz uses dated external flows and approximate month-end account values. XIRR uses the same boundary flows and endpoint values.",
+    "reviewState": "Review: {{state}}",
+    "review": {
+      "candidate": "unreviewed estimate",
+      "reviewed": "reviewed estimate"
+    },
+    "closeMethod": "Close"
+  },
+  "attribution": {
+    "noData": "No attribution data available",
+    "portfolioReturn": "Portfolio Return",
+    "benchmarkReturn": "Benchmark Return",
+    "excessReturn": "Excess Return",
+    "byClass": "Attribution by Class",
+    "allTime": "(All Time)",
+    "allocation": "Allocation",
+    "selection": "Selection",
+    "interaction": "Interaction",
+    "columns": {
+      "portW": "Port.W",
+      "benchW": "Bench.W",
+      "portR": "Port.R",
+      "benchR": "Bench.R",
+      "total": "Total"
+    },
+    "howToRead": {
+      "title": "How to Read Attribution",
+      "intro": "This view shows <strong>relative contribution vs benchmark</strong>, not absolute profit ranking.",
+      "formula": "Contribution = (Port.W - Bench.W) × (Class Return - Benchmark Return)",
+      "note1": "If a class loses money but you are underweight it, it can still show a positive contribution.",
+      "note2": "If a class makes money but you are underweight a strong benchmark class, it can show a negative contribution.",
+      "note3": "For absolute gain/loss by class, use the Performance by Class table in the Overview tab."
+    }
+  },
+  "risk": {
+    "noData": "No risk metrics data available",
+    "metrics": {
+      "sharpe": {
+        "title": "Sharpe Ratio",
+        "description": "Risk-adjusted return per unit of total volatility. > 1.0 is good."
+      },
+      "sortino": {
+        "title": "Sortino Ratio",
+        "description": "Risk-adjusted return per unit of downside volatility. > 2.0 is excellent."
+      },
+      "drawdown": {
+        "title": "Max Drawdown",
+        "description": "Largest peak-to-trough decline. Lower is better."
+      },
+      "calmar": {
+        "title": "Calmar Ratio",
+        "description": "Annualized return ÷ Max Drawdown. > 1.0 is good."
+      },
+      "volatility": {
+        "title": "Annual Volatility",
+        "description": "Annualized standard deviation of returns. Lower = less risk."
+      },
+      "return": {
+        "title": "Total Return",
+        "description": "Overall portfolio return since first data point."
+      }
+    },
+    "status": {
+      "excellent": "Excellent",
+      "monitor": "Monitor",
+      "warning": "Warning"
+    },
+    "limitedDataDrawdown": "May reflect limited data.",
+    "limitedDataVolatility": "High volatility may reflect limited data.",
+    "basedOnDataPoints": "Based on {{count}} data points",
+    "insufficientDataNote": " (Need 12+ monthly returns)"
+  },
+  "flows": {
+    "title": "Investment account confirmations",
+    "loading": "Loading…",
+    "saving": "Saving…",
+    "empty": "Nothing to confirm",
+    "loadError": "Could not load confirmations.",
+    "saveError": "Could not save. Please try again.",
+    "retry": "Retry",
+    "noDeposits": "No deposits this month",
+    "enterAmount": "Enter amount",
+    "signedAmount": "Signed amount (CNY)",
+    "save": "Save",
+    "invalidAmount": "Enter a nonzero CNY amount (+ in, − out).",
+    "externalIn": "External in",
+    "externalOut": "External out",
+    "internal": "Internal",
+    "waiting": "{{month}} waiting for: {{items}}",
+    "separator": ", ",
+    "latest": "latest: {{date}}",
+    "sources": {
+      "TTFund": "TTFund",
+      "Gold": "Gold",
+      "RSU": "RSU",
+      "Schwab": "Schwab",
+      "IBKR": "IBKR",
+      "Financial Summary": "Financial Summary"
+    },
+    "blockers": {
+      "fs_month_missing": "Financial Summary row",
+      "source_data_behind": "{{source}} update",
+      "cn_web_list_missing": "TTFund website list",
+      "ibkr_cash_transactions_missing": "IBKR cash transactions",
+      "fx_unavailable": "dated exchange rate",
+      "open_reviews_one": "{{count}} confirmation",
+      "open_reviews_other": "{{count}} confirmations",
+      "open_reviews": "{{count}} confirmations",
+      "fs_value_check": "Financial Summary values to check ({{count}})"
+    },
+    "reasons": {
+      "cancelledPaid": "Confirm the paid cancellation",
+      "status": "Confirm transaction status",
+      "bankAccount": "Confirm the bank movement",
+      "cashAction": "Confirm the cash movement",
+      "transactionType": "Confirm the transaction",
+      "commission": "Check sale proceeds and fees",
+      "amount": "Confirm the amount",
+      "fx": "Dated exchange rate missing",
+      "ibkr": "Confirm monthly deposits / withdrawals",
+      "default": "Confirm this movement"
+    },
+    "noActivity": "No {{source}} activity in {{month}}",
+    "uploadNewer": "or upload a newer {{source}} file",
+    "sourceAction": "confirm no activity or upload a newer {{source}} file",
+    "uploadThrough": "Upload a newer {{source}} file (current data ends {{date}})",
+    "fsZero": "{{column}} is 0 for {{month}}, but about {{estimate}} was still held at month-end — please correct the Financial Summary row",
+    "fsUnchanged": "{{column}} for {{month}} equals last month exactly ({{value}}) — please update the Financial Summary row",
+    "fsValueCorrect": "Value is correct",
+    "fsColumns": {
+      "投资资产_股票基金_A股基金": "A-share funds",
+      "投资资产_股票基金_美股基金_Schwab": "Schwab",
+      "投资资产_股票基金_美股基金_IBKR": "IBKR",
+      "投资资产_公司RSU_Amazon Stock": "Amazon RSU",
+      "投资资产_公司RSU_Google Stock": "Google RSU",
+      "投资资产_黄金_纸黄金(元)": "Paper gold"
+    }
+  }
+}
