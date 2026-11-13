@@ -1,0 +1,12 @@
+<!-- @dsCard group="Forms" height=100 -->
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:var(--color-bg);}body{font-family:var(--font-sans);color:var(--color-fg-1);padding:20px;box-sizing:border-box;}*{box-sizing:border-box}.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.col{display:flex;flex-direction:column;gap:14px}.lbl{font:500 10px var(--font-mono);color:var(--color-fg-3);text-transform:uppercase;letter-spacing:.05em;width:84px}</style></head><body><div id="root"></div>
+<script>
+(function () {
+const H = window.Huinsight, h = React.createElement;
+function App(){
+  const [q,setQ]=React.useState(""); const [s,setS]=React.useState("all");
+  return h(H.Toolbar,null,h(H.SearchInput,{value:q,onChange:setQ,placeholder:"Search assets…"}),h(H.OpsSelect,{label:"Source",value:s,onChange:setS,options:[{value:"all",label:"All sources"},"Schwab_CSV","CN_Fund_Excel"]}),h("div",{style:{marginLeft:"auto"}},h(H.ChipBtn,{icon:"download",onClick:()=>{}},"Export")));
+}
+ReactDOM.createRoot(document.getElementById("root")).render(h(App));
+})();
+</script></body></html>

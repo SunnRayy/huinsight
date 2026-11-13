@@ -1,0 +1,497 @@
+# =============================================================================
+# Huinsight demo AI-advisor seed content, Chinese (zh-CN)
+# =============================================================================
+# The Chinese twin of ai_seed.yaml, read by `seed_ai.py --lang zh-CN`. Same
+# persona, same structure, same facts: every number, date, id, enum value and
+# tag is identical to the English file (tests/tools/test_seed_ai.py checks the
+# two files key by key). Only the prose is Chinese. See ai_seed.yaml for the
+# comments on why each section exists and how its rows are keyed.
+#
+# Terms follow the app's own zh-CN UI strings
+# (ux-command-center/src/i18n/locales/zh-CN): 风险档位, 策略备忘录, 价值陷阱复盘,
+# 偏离, 再平衡, 梯队, 演示角色.
+#
+# Writing note: each paragraph is ONE line. YAML folding joins wrapped lines
+# with a space, which would put stray spaces inside Chinese sentences.
+# Paragraphs are separated by two blank lines, as in the English file.
+
+investor_profile:
+  display_name: "王小明"
+  language: zh-CN
+  philosophy:
+    goal: >-
+      在 2038 年底前实现财务自由：可投资的流动资产达到 500 万元人民币（约为家庭 25 年的开支），以目前约 350 万元的净资产为起点。此后在美股、境内基金、黄金和房产之间长期复利、保值，不依赖任何单一市场、雇主或币种。
+    horizon: >-
+      全家实现财务自由的期限是 10–15 年。在这个期限之内，个别卫星仓位（境内主题/行业基金、每一批归属的亚马逊 RSU）按 1–3 年的短周期战术窗口复盘，对它们的信念强度不同于核心仓位。
+    risk_tolerance: >-
+      增长仓位（美股加境内卫星基金）可承受约 25–30% 的最大回撤而不改变操作。核心部分——房产、黄金、保险、现金和存款——必须扛得住任何单一年份的冲击；收益靠卫星仓位争取，不靠核心仓位。
+    core_weakness: >-
+      境内主题/行业基金（白酒、偏股混合）大涨之后容易追高；RSU 归属后常常拖着不减持，没有按既定的卖股缴税计划执行。在大涨或大跌的当下，需要事先定好的明确规则，而不是临场判断。
+    portfolio_structure: >-
+      三层梯队结构，括号内为目标区间。
+
+
+      第一梯队——核心与稳定（占净资产 45–55%）：阳光花园房产（总价约 185 万元，房贷按月递减）、作为人民币现金缓冲的境内货币基金（000198，天弘余额宝货币A）、人民币/美元银行存款，以及两份有效保单（安泰终身寿险2019、惠民定期重疾）。保单只为保障，不追求收益。已失效的旧意外险只是历史记录，不属于当前保障。
+
+
+      第二梯队——核心增长（30–40%）：分布在 Schwab 和 IBKR 的美股核心指数/ETF 仓位——VOO、VTI、IEFA、SCHD、BND，提供分散化的股票和债券贝塔——再加上通过 110020（易方达沪深300ETF联接A）持有的境内核心指数。任何一个核心仓位偏离其区间超过 5 个百分点，就再平衡回目标。
+
+
+      第三梯队——卫星与集中持仓（10–20%）：AAPL 和 BRK-B 个股；境内行业/主题基金（161725 招商中证白酒指数A、005827 易方达蓝筹精选混合、519674 银河创新成长混合A）；作为低相关通胀对冲的纸黄金（约 160 克，分在招行和建行，目标占净资产 5–8%，超出这个区间就重新评估仓位）；以及亚马逊 RSU。RSU 按既定的卖股缴税计划执行（每归属 12 股卖出 4 股）；计划之外多留的股份，必须先通过上面「核心弱点」提到的纪律检查，才算深思熟虑的决定，而不是惯性。
+
+retirement_goal:
+  name: "财务自由"
+  target_amount: 5000000
+  target_date: "2038-12-31"
+  notes: "演示角色的财务自由目标（投资者画像中的「目标」）。"
+
+strategy_memos:
+  - memo_date: "2026-06-05"
+    title: "美股仓位复盘——核心指数权重与 AAPL/BRK-B 卫星仓位"
+    strategic_bias: neutral
+    key_directives:
+      - "继续持有 VOO/VTI/SCHD/BND，作为美股核心贝塔仓位；超出既定再平衡区间时，不再新买核心指数。"
+      - "AAPL + BRK-B 卫星仓位合计不超过美股仓位的 20%；超过即减持。"
+      - "IEFA（美国以外的发达市场）是常设的分散化配置，不是战术交易——不择时。"
+    content: >-
+      对照投资者画像中第二、第三梯队的目标区间，复盘了 Schwab（VOO、QQQ、SCHD、AAPL、BRK-B、BND）和 IBKR（VTI、IEFA）上的全部美股仓位。
+
+
+      核心（VOO、VTI、SCHD、BND）：四个仓位都在各自的目标区间内。不操作——既定的再平衡规则（任一核心仓位偏离目标超过 5 个百分点时再平衡）对它们都没有触发。
+
+
+      卫星（AAPL、BRK-B）：两只个股合计权重远低于这一对设定的上限（美股仓位的 20%）。本轮无需减持。QQQ 视为叠加在核心之上的战术性增长倾斜，不是卫星个股押注，不受 AAPL/BRK-B 上限约束。
+
+
+      IEFA 是核心仓位里常设的美国以外发达市场分散化配置——不按卫星仓位来定规模或择时，本备忘录也不建议改变这一点。
+
+
+      下次复盘的指令：重新核对 AAPL + BRK-B 合计权重是否在 20% 上限内；在此之前，这部分仓位没有其他需要常设触发条件的事项。
+
+  - memo_date: "2026-07-10"
+    title: "境内核心-卫星基金论点——110020 核心与 161725/519674/005827 卫星"
+    strategic_bias: defensive
+    key_directives:
+      - "证伪条件：如果 110020（沪深 300 核心跟踪基金）连续两次月度复盘偏离目标配置区间超过 5 个百分点，就重新评估仓位规模。"
+      - "证伪条件：如果行业渠道监管发生实质变化、影响资金流的经济逻辑，或者 161725（招商中证白酒指数A，白酒行业）连续两个季度占净资产超过 8% 且未相应减持，其投资论点即被证伪。"
+      - "证伪条件：如果 519674（银河创新成长混合A）相对基准的 3 年滚动主动份额降到 60% 以下（风格漂移成变相指数基金），这只偏股混合卫星基金的论点即被证伪——届时降为仅作核心配置。"
+      - "证伪条件：如果 005827（易方达蓝筹精选混合）前十大持仓集中度超过净值的 60%，也就是不再像一只分散化的蓝筹基金，其论点即被证伪。"
+      - "以上各项都不接受仅凭价格下跌或浮亏作为证伪依据。价格下跌只会开启一次价值陷阱复盘，并不证明底层论点已经失效。"
+    content: >-
+      境内基金的证伪条件，分核心和卫星两部分。写这份备忘录，是为了让今后对其中任何一只基金做价值陷阱复盘时，有成文的投资论点和明确的证伪条款可以对照——而不只是一张价格走势图。
+
+
+      核心：110020（易方达沪深300ETF联接A）是沪深 300 核心持仓。证伪条件：连续两次月度复盘偏离目标配置区间超过 5 个百分点时，重新评估仓位规模。这是规模/偏离检查，不是业绩评判。
+
+
+      卫星：161725（招商中证白酒指数A）、519674（银河创新成长混合A）和 005827（易方达蓝筹精选混合）作为主题/主动卫星持有，各有各的证伪条件（见核心指令）——161725 看行业监管风险，519674 看主动份额的风格漂移，005827 看持仓集中度漂移。三只都不会仅因浮亏而被证伪；回撤只是开启复盘的触发点，复盘要对照的是本备忘录列出的条件。
+
+
+      明确的证伪条件（供价值陷阱复盘功能原文引用）：
+
+      1）110020 核心连续 2 个月偏离目标区间超过 5 个百分点。
+
+      2）161725 所在行业的监管变化改变了渠道经济逻辑，或其占净资产比例连续 2 个季度超过 8%。
+
+      3）519674 的 3 年主动份额降到基准的 60% 以下。
+
+      4）005827 前十大持仓集中度超过净值的 60%。
+
+      价格下跌和浮亏比例明确不能作为这四只基金任何一只的证伪证据——它们只开启复盘，不决定结论。
+
+  - memo_date: "2026-08-14"
+    title: "另类资产与集中度风险政策——纸黄金、亚马逊 RSU、房产"
+    strategic_bias: defensive
+    key_directives:
+      - "纸黄金（ALTS_Paper_Gold）目标区间为净资产的 5–8%；整整一个季度处于区间之外时，重新评估仓位。"
+      - "RSU_AMZN：保持既定的卖股缴税计划（每归属 12 股卖出 4 股）；计划之外多留的 RSU 必须是记录在案的主动决定，而不是默认结果。"
+      - "房产（Property_阳光花园）属于第一梯队核心——不按价格再平衡；无论房产估值如何波动，房贷都按计划还款。"
+    content: >-
+      这份政策备忘录针对三个不适用常规股票/基金再平衡逻辑的仓位：纸黄金、亚马逊 RSU 和房产。
+
+
+      纸黄金（招行和建行纸黄金账户合计约 160 克）作为低相关的通胀对冲持有，目标为净资产的 5–8%。它不是战术交易仓位——只有在整整一个季度偏离这个区间时才重新评估仓位，不因短期金价波动而调整。
+
+
+      亚马逊 RSU 每季度归属一次（每次 12 股）；既定计划是每归属 12 股自动卖出 4 股，以控制集中度风险。在这一卖股缴税计划之外多留的股份，必须是记录在案的主动决定——这正是家庭已知的行为弱点（见投资者画像中的核心弱点），也是把这条政策写下来、而不是留到归属时临场判断的原因。
+
+
+      房产（阳光花园）属于第一梯队核心。它不随短期估值波动而再平衡；房贷还款计划与房产的市值无关。
+
+memo_registry:
+  - memo_id: "DEMO-AI-US-CORE-2026Q2"
+    title: "美股仓位复盘——核心指数权重与 AAPL/BRK-B 卫星仓位"
+    falsification_summary: >-
+      核心（VOO/VTI/SCHD/BND/IEFA）的规模论点在各仓位都处于目标区间内时成立；如果 AAPL+BRK-B 合计权重连续两次复盘超过美股仓位的 20%，卫星论点即被证伪。仅价格下跌不构成证伪。
+    linked_assets:
+      - US_STK_VOO
+      - US_STK_VTI
+      - US_STK_SCHD
+      - US_STK_BND
+      - US_STK_IEFA
+      - US_STK_AAPL
+      - US_STK_BRK-B
+  - memo_id: "DEMO-AI-CN-SATELLITE-2026Q3"
+    title: "境内核心-卫星基金论点——110020 核心与 161725/519674/005827 卫星"
+    falsification_summary: >-
+      110020 核心连续 2 个月偏离目标区间超过 5 个百分点；161725 在行业监管改变渠道经济逻辑、或占净资产比例连续 2 个季度超过 8% 时被证伪；519674 在 3 年主动份额降到基准 60% 以下时被证伪；005827 在前十大持仓集中度超过净值 60% 时被证伪。价格下跌或浮亏本身明确不能作为这四只基金任何一只的证伪证据。
+    linked_assets:
+      - CN_FUND_110020
+      - CN_FUND_161725
+      - CN_FUND_519674
+      - CN_FUND_005827
+  - memo_id: "DEMO-AI-ALTS-CONCENTRATION-2026Q3"
+    title: "另类资产与集中度风险政策——纸黄金、亚马逊 RSU、房产"
+    falsification_summary: >-
+      纸黄金目标区间为净资产的 5–8%，只有整整一个季度处于区间之外时才重新评估（不因短期价格波动调整）。RSU 卖股缴税计划（每归属 12 股卖出 4 股）是常设政策；计划之外多留的股份需要记录在案的主动决定。房产属于第一梯队核心，不随估值波动再平衡。
+    linked_assets:
+      - ALTS_Paper_Gold
+      - RSU_AMZN
+      - Property_阳光花园
+
+sample_brief:
+  title: "示例每日简报"
+  content_json:
+    macro_outlook:
+      narrative: >-
+        这是一份示例简报，为演示角色（王小明）撰写，用来展示 AI 顾问每日输出的样子——它不是 AI 模型生成的，也不反映实时市场状况。真正生成的简报会先把市场温度、宏观背景和组合状态归纳成当天唯一的优先事项；由于演示角色背后没有实时行情，这份示例只示意这种归纳方式，不声称任何具体的市场判断。
+      key_factors:
+        - "驱动这份示例的是组合状态，而不是宏观行情——演示角色实际的梯队结构见下方的持仓分析。"
+        - "真正的简报会引用具体的宏观因素（利率、美元强弱、行业轮动）；这份示例刻意省略了这些，以免被误认为实时行情解读。"
+    holdings_risk:
+      narrative: >-
+        截至演示快照，投资者画像中的三层梯队结构保持完整：第一梯队核心与稳定，第二梯队核心增长（美股指数仓位加 110020），第三梯队卫星与集中持仓（AAPL、BRK-B、境内主题基金、纸黄金、亚马逊 RSU）。不过，两把尺子给出的结论不一致。偏离预警按当前启用的风险档位（应用默认的「Balanced」）衡量各资产类别：对照它，权益明显超配，固定收益明显低配。家庭自己的规则按各核心仓位的区间衡量，其中没有一个偏离超过 5 个百分点。两者同时成立；下面的操作建议会说明今天以哪一个为准。
+      positions:
+        - name: "美股核心指数仓位（VOO / VTI / SCHD / BND）"
+          status: watch
+          comment: "按 2026-06-05 美股仓位复盘备忘录，每个仓位都在自己的区间内，单仓位规则没有触发。但从资产类别看，权益相对风险档位超配（见「高」级偏离预警），所以这里是「关注」，而不是单纯的「持有」。"
+        - name: "AAPL + BRK-B 卫星仓位"
+          status: watch
+          comment: "合计权重在同一份备忘录设定的美股仓位 20% 上限之内；常设指令是每个复盘周期都重新核对这一对。"
+        - name: "161725（招商中证白酒指数A）"
+          status: watch
+          comment: "来自 2026-07-10 境内基金备忘录的证伪条件：连续两个季度占净资产超过 8% 时重新评估——不只看价格。"
+        - name: "亚马逊 RSU"
+          status: watch
+          comment: "按 2026-08-14 政策备忘录的既定卖股缴税计划（每归属 12 股卖出 4 股）执行；计划之外多留的股份需要记录在案的主动决定。"
+    risk_alerts:
+      narrative: >-
+        示例风险汇总，依据的是已写入的策略备忘录中的证伪条件，而不是任何实时回撤读数。
+      items:
+        - title: "权益相对风险档位超配"
+          severity: high
+          description: "偏离预警指出，相对当前风险档位的资产类别目标，权益超配、固定收益低配。这个档位是应用的默认值，不是这个家庭自己制定的计划。家庭自己的规则（单仓位 5 个百分点区间，2026-06-05 备忘录）并没有触发。两者之间的差距才是真正的发现：要么启用一个与梯队结构相符的风险档位，要么接受这些类别目标，并计划补足固定收益。"
+        - title: "境内卫星基金集中度"
+          severity: medium
+          description: "161725 及其他境内卫星基金都有明确的证伪阈值（行业监管变化、主动份额漂移、净值集中度）——仅价格波动不会触发其中任何一项。"
+        - title: "RSU 集中度漂移"
+          severity: medium
+          description: "家庭有记录的核心弱点是 RSU 归属后减持不足；既定的卖股缴税计划就是针对这一点的保障。"
+        - title: "纸黄金仓位区间"
+          severity: low
+          description: "目标区间为净资产的 5–8%；按另类资产政策备忘录，只有整整一个季度偏离这个区间时才重新评估。"
+    action_items:
+      narrative: >-
+        这份示例中每一条建议操作，都对应一条已经备案的常设指令，而不是演示角色缺乏行情依据的实时买卖建议。
+      actions:
+        - asset: "美股核心指数仓位"
+          action: hold
+          reasoning: "相对风险档位，权益超配（「高」级偏离预警）；但按 2026-06-05 备忘录，这部分仓位以单仓位区间规则为准，没有任何仓位偏离其区间超过 5 个百分点。所以暂不减持。已标记到下次复盘，届时需要决定这个家庭究竟遵循哪一套目标。"
+        - asset: "AAPL + BRK-B"
+          action: hold
+          reasoning: "卫星仓位合计权重仍在 20% 上限之内；只有超过时才减持。"
+        - asset: "亚马逊 RSU"
+          action: sell
+          reasoning: "下次归属时继续执行既定的卖股缴税计划（每归属 12 股卖出 4 股）；计划之外的任何操作都需要记录在案的决定。"
+    watchlist:
+      narrative: >-
+        明日关注事项沿用策略备忘录已经定义的证伪触发条件——这份示例不另造新的条件。
+      watchlist:
+        - item: "资产类别层面的权益与固定收益"
+          trigger: "下次复盘时仍偏离风险档位的类别目标，且仍未决定以哪套目标为准"
+          level: "类别权重与当前风险档位对比，不是价格水平"
+        - item: "110020（沪深 300 核心跟踪基金）仓位规模"
+          trigger: "连续两次月度复盘偏离目标区间超过 5 个百分点"
+          level: "目标配置区间，不是价格水平"
+        - item: "161725（白酒指数）权重"
+          trigger: "连续两个季度占净资产超过 8%"
+          level: "占净资产的百分比"
+        - item: "纸黄金仓位规模"
+          trigger: "整整一个季度处于净资产 5–8% 区间之外"
+          level: "占净资产的百分比"
+
+sample_review:
+  title: "示例投资复盘 2026-07-15 ~ 2026-08-14"
+  period_start: "2026-07-15"
+  period_end: "2026-08-14"
+  content_json:
+    trade_summary:
+      narrative: >-
+        这是一份为演示角色撰写的示例复盘，并非 AI 模型生成。它演示了真正的复盘会采用的交易纪律框架，依据的是投资者画像和策略备忘录中已有的常设计划，而不是任何已执行的交易记录。
+      trades:
+        - asset: "亚马逊 RSU"
+          action: sell
+          date: "2026-08-14"
+          logic: "按另类资产与集中度政策备忘录，如期执行了既定的卖股缴税计划（每归属 12 股卖出 4 股）。"
+        - asset: "美股核心指数仓位（VOO/VTI/SCHD/BND）"
+          action: hold
+          date: "2026-08-14"
+          logic: "依据 2026-06-05 备忘录的单仓位区间规则继续持有：没有核心仓位偏离其区间超过 5 个百分点。但从资产类别看，整个复盘期内权益相对当前风险档位一直超配，而这次持有并没有回应这一点。"
+      grade_breakdown: {}
+    advice_accuracy:
+      narrative: >-
+        这份示例评分卡只演示格式——演示角色背后没有实时交易历史可供评分。
+      scorecard:
+        - decision: "复盘期内继续持有美股核心仓位"
+          accuracy_tier: medium
+          verdict: "按家庭自己写下的规则是对的：没有核心仓位离开它的区间。但整个复盘期内，偏离预警一直显示权益相对当前风险档位超配、固定收益低配，而这次持有始终没有回应这一点。按一套目标是对的，按另一套目标则未经审视。"
+        - decision: "继续执行既定的 RSU 卖股缴税计划，而不是凭判断减持"
+          accuracy_tier: high
+          verdict: "与家庭有记录的核心弱点（归属后减持不足）相符，也符合为防范这一弱点而事先定下的规则。"
+    portfolio_performance:
+      narrative: >-
+        真正的复盘会根据实时快照报告期间收益、配置偏离和基准对比。这份示例刻意省略具体业绩数字——演示角色的快照固定在 2026-05-23，如果当作实时结果展示，会错误地描述真实、变动中的数字。
+    lessons_learned:
+      narrative: >-
+        示例经验直接取自已写入的策略备忘录中记录的核心弱点，而不是本期执行的任何交易。
+      lessons:
+        - "事先定好的规则（RSU 卖股缴税计划、AAPL+BRK-B 的 20% 上限）之所以有效，是因为它们恰好在大涨或大批归属这种时刻——也就是家庭有记录的核心弱点最容易占上风的时候——去掉了临场判断。"
+      improvements:
+        - "决定以哪套目标为准。单仓位区间和风险档位的类别目标对权益的判断不一致：要么启用一个与梯队结构相符的风险档位，要么接受这些类别目标并计划补足固定收益。"
+        - "下次复盘：在新资金进入境内基金仓位之前，先对照证伪条件重新核对 110020 和各只境内卫星基金。"
+    rule_updates:
+      narrative: >-
+        本期有一处规则缺口：策略备忘录设定了单仓位区间，却没有资产类别层面的目标，所以偏离预警只能退回到应用默认的风险档位。除此之外，证伪条件和仓位区间覆盖了本期的所有决策。
+      suggestions:
+        - "根据三层梯队结构写出资产类别层面的目标，并把它设为当前风险档位，让偏离预警和区间规则按同一份计划来衡量。"
+
+insights_lifecycle:
+  - title: "161725 权重逼近净资产 8% 的观察线"
+    category: risk
+    status: raw
+    confidence: 0.35
+    validated_cases: 0
+    entity_refs: [CN_FUND_161725]
+    created_at: "2026-04-05"
+    tags: [cn-satellite, concentration]
+    body: >-
+      早期的原始观察，记在正式的第三季度境内卫星基金备忘录之前：161725（招商中证白酒指数A）的权重上升得比其他境内卫星基金都快。尚未对照证伪条件复盘——已标记到下次策略复盘。
+
+  - title: "每次归属都如期执行了 RSU 卖股缴税"
+    category: recommendation
+    status: recurring
+    confidence: 0.72
+    validated_cases: 1
+    recurrence_count: 3
+    entity_refs: [RSU_AMZN]
+    created_at: "2026-04-01"
+    tags: [rsu, discipline]
+    body: >-
+      最近三次归属反复出现的模式：每次都如期执行了既定的卖股缴税计划（每归属 12 股卖出 4 股），没有在计划之外多留股份。建议：保持既定计划不变——无需凭判断调整。
+
+  - title: "519674 主动份额风格漂移，连续三次复盘被标记"
+    category: risk
+    status: recurring
+    confidence: 0.45
+    validated_cases: 3
+    recurrence_count: 3
+    entity_refs: [CN_FUND_519674]
+    created_at: "2026-04-10"
+    tags: [cn-satellite, style-drift]
+    validated_case_links:
+      - link: "review:2026-Q1-monthly"
+        note: "本次复盘主动份额在正常范围内。"
+        added_at: "2026-04-10"
+      - link: "review:2026-Q2-monthly-1"
+        note: "主动份额开始下行；尚未触及 60% 的证伪线。"
+        added_at: "2026-05-10"
+      - link: "review:2026-Q2-monthly-2"
+        note: "连续第三次复盘出现同样的下行漂移；继续观察，尚未证伪。"
+        added_at: "2026-06-10"
+    body: >-
+      同一个风格漂移信号连续三次月度复盘出现（见已验证案例）：519674 的主动份额在下行，但还没有跌破 2026-07-10 境内卫星基金备忘录中「基准 60%」的证伪线。目前只做观察——还不是调整仓位的建议。
+
+  - title: "AAPL+BRK-B 卫星仓位合计权重经验证在 20% 上限内"
+    category: strategy
+    status: validated
+    confidence: 0.78
+    validated_cases: 2
+    entity_refs: [US_STK_AAPL, US_STK_BRK-B]
+    created_at: "2026-06-20"
+    tags: [us-satellite, cap-check]
+    validated_case_links:
+      - link: "review:2026-06-05-memo"
+        note: "确认合计权重在美股仓位 20% 上限之内。"
+        added_at: "2026-06-20"
+      - link: "review:2026-Q2-monthly"
+        note: "在随后的月度复盘中再次核对；仍在上限之内。"
+        added_at: "2026-06-28"
+    body: >-
+      来自 6 月美股仓位复盘的已验证结论：AAPL + BRK-B 卫星仓位合计权重确认在 2026-06-05 备忘录设定的美股仓位 20% 上限之内，此后又核对过两次。论点成立；本轮无需减持。
+
+  - title: "纸黄金仓位连续三次复盘经验证在 5–8% 区间内"
+    category: process
+    status: validated
+    confidence: 0.55
+    validated_cases: 3
+    entity_refs: [ALTS_Paper_Gold]
+    created_at: "2026-08-01"
+    tags: [alts, sizing]
+    validated_case_links:
+      - link: "review:2026-06-monthly"
+        note: "在净资产 5–8% 的区间内。"
+        added_at: "2026-06-15"
+      - link: "review:2026-07-monthly"
+        note: "7 月金价波动后仍在区间内。"
+        added_at: "2026-07-15"
+      - link: "review:2026-08-14-memo"
+        note: "另类资产政策备忘录复盘时确认在区间内。"
+        added_at: "2026-08-01"
+    body: >-
+      在三次独立的复盘中，对照 2026-08-14 另类资产政策备忘录中「净资产 5–8%」的区间检查纸黄金仓位，每次都在区间内。已验证——无需调整仓位。
+
+  - title: "核心仓位再平衡纪律升级为常设原则"
+    category: recommendation
+    status: principle
+    confidence: 0.85
+    validated_cases: 4
+    rule_layer: principle
+    entity_refs: [US_STK_VTI, US_STK_IEFA]
+    created_at: "2026-06-22"
+    tags: [us-core, rebalance, principle]
+    validated_case_links:
+      - {link: "review:2026-06-05-memo", note: "核心仓位在区间内。", added_at: "2026-06-22"}
+      - {link: "review:2026-07-monthly", note: "仍在区间内。", added_at: "2026-07-15"}
+      - {link: "review:2026-08-monthly", note: "仍在区间内。", added_at: "2026-08-15"}
+      - {link: "review:2026-09-monthly", note: "连续第四次复盘无异常。", added_at: "2026-09-15"}
+    body: >-
+      连续四次复盘无异常后，升级为常设原则：「只有当某个仓位偏离目标超过 5 个百分点时，才再平衡美股核心仓位；绝不只因价格波动而操作。」此后对 VTI/IEFA 的加仓都遵循了这条规则，而不是临时判断。
+
+  - title: "既定的 RSU 卖股缴税纪律升级为清单条目"
+    category: recommendation
+    status: principle
+    confidence: 0.90
+    validated_cases: 5
+    rule_layer: checklist_item
+    entity_refs: [RSU_AMZN]
+    created_at: "2026-08-16"
+    tags: [rsu, discipline, principle]
+    validated_case_links:
+      - {link: "review:2025-Q4-vest", note: "如期执行。", added_at: "2025-11-15"}
+      - {link: "review:2026-Q1-vest", note: "如期执行。", added_at: "2026-02-15"}
+      - {link: "review:2026-Q2-vest", note: "如期执行。", added_at: "2026-05-15"}
+      - {link: "review:2026-Q3-vest", note: "如期执行；已固化为清单条目。", added_at: "2026-08-16"}
+      - {link: "review:2026-08-14-memo", note: "与另类资产/集中度政策备忘录的指令一致。", added_at: "2026-08-16"}
+    body: >-
+      在连续第四次如期执行卖股缴税之后，固化为可导出的清单条目：「每归属 12 股，始终卖出 4 股；计划之外多留的股份，必须是记录在案的主动决定。」与 2026-08-14 另类资产政策备忘录的常设指令完全一致。
+
+  - title: "大涨之后考虑减持 QQQ 战术倾斜"
+    category: recommendation
+    status: raw
+    confidence: 0.30
+    validated_cases: 0
+    entity_refs: [US_STK_QQQ]
+    created_at: "2026-07-25"
+    tags: [us-tactical, qqq]
+    body: >-
+      早期、尚未复盘的建议：QQQ 的战术性增长倾斜（叠加在核心仓位之上，不受 AAPL/BRK-B 卫星上限约束）本季度涨幅远超核心仓位。家庭尚未接受或拒绝——已标记到下次仓位复盘。
+
+insight_adoptions:
+  - title: "每次归属都如期执行了 RSU 卖股缴税"
+    adopted: true
+  - title: "核心仓位再平衡纪律升级为常设原则"
+    adopted: true
+  - title: "既定的 RSU 卖股缴税纪律升级为清单条目"
+    adopted: true
+  # 「大涨之后考虑减持 QQQ 战术倾斜」deliberately stays pending (adopted = NULL),
+  # as in the English file.
+
+trade_logs:
+  - log_date: "2026-06-23"
+    asset_id: US_STK_VTI
+    asset_name: "VANGUARD TOTAL STOCK MARKET ETF"
+    action: Buy
+    price: 238.10
+    quantity: 5
+    amount: -1190.50
+    decision_reason: >-
+      在再平衡纪律升级为原则之后，加仓了 VTI 核心仓位；按 6 月复盘，该仓位在目标区间内，所以这是一次计划内的补仓，而不是战术操作。
+    ai_suggestion: >-
+      AI 顾问的核心仓位再平衡原则显示 VTI/IEFA 仍在区间内，支持一次小额的计划内补仓，而不是新的战术性买入。
+    suggestion_source: review
+    verification_status: verified
+    verification_date: "2026-07-25"
+    verification_result: >-
+      补仓后直到下一次复盘都保持在既定的核心区间内；之后没有出现偏离或再平衡触发。
+    verdict: good_call
+    order_origin: manual
+
+  - log_date: "2026-08-15"
+    asset_id: RSU_AMZN
+    asset_name: "Amazon RSU"
+    action: Sell
+    price: 205.00
+    quantity: 4
+    amount: 820.00
+    decision_reason: >-
+      按既定的卖股缴税计划卖出了归属的 12 股中的 4 股；同一天这一做法被固化为清单条目。
+    ai_suggestion: >-
+      在连续四次如期归属之后，AI 顾问建议保持卖股缴税比例不变，而不是凭判断多留股份。
+    suggestion_source: review
+    verification_status: verified
+    verification_date: "2026-09-01"
+    verification_result: >-
+      卖股缴税完全按计划执行；本次归属没有在既定计划之外多留股份。
+    verdict: good_call
+    order_origin: manual
+
+  - log_date: "2026-06-18"
+    asset_id: US_STK_AAPL
+    asset_name: "APPLE INC"
+    action: Sell
+    price: 208.40
+    quantity: 3
+    amount: 625.20
+    decision_reason: >-
+      6 月仓位复盘显示 AAPL+BRK-B 合计权重接近美股仓位 20% 的上限，于是减持了 3 股 AAPL。
+    suggestion_source: manual
+    verification_status: verified
+    verification_date: "2026-07-20"
+    verification_result: >-
+      减持后，卫星仓位合计权重回到美股仓位上限之内；本轮无需进一步操作。
+    verdict: good_call
+    order_origin: manual
+
+  - log_date: "2026-07-05"
+    asset_id: CN_FUND_161725
+    asset_name: "招商中证白酒指数A"
+    action: Sell
+    price: 0.5250
+    quantity: 8000
+    amount: 4200.00
+    decision_reason: >-
+      仓位逼近 7 月境内卫星基金备忘录之前记下的「净资产 8%」观察线，于是减持了 161725。
+    suggestion_source: manual
+    verification_status: verified
+    verification_date: "2026-08-10"
+    verification_result: >-
+      权重回到观察线以下；行业监管风险没有变化，这次减持本身并不证伪投资论点。
+    verdict: good_call
+    order_origin: manual
+
+  - log_date: "2026-06-30"
+    asset_id: ALTS_Paper_Gold
+    asset_name: "纸黄金"
+    action: Buy
+    price: 770.00
+    quantity: 20
+    amount: -15400.00
+    decision_reason: >-
+      纸黄金滑向 5–8% 区间的下沿，于是补仓；补仓规模小于区间所允许的幅度。
+    suggestion_source: manual
+    verification_status: verified
+    verification_date: "2026-08-05"
+    verification_result: >-
+      补仓规模不足以完全回到区间内；直到下一次复盘，仓位一直略低于目标——这是仓位纪律上的部分失误，不是择时判断。
+    verdict: regret
+    order_origin: manual

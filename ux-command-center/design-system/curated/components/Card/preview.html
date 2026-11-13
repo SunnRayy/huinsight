@@ -1,0 +1,13 @@
+<!-- @dsCard group="Layout" height=170 -->
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:var(--color-bg);}body{font-family:var(--font-sans);color:var(--color-fg-1);padding:20px;box-sizing:border-box;}*{box-sizing:border-box}.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.col{display:flex;flex-direction:column;gap:14px}.lbl{font:500 10px var(--font-mono);color:var(--color-fg-3);text-transform:uppercase;letter-spacing:.05em;width:84px}</style></head><body><div id="root"></div>
+<script>
+(function () {
+const H = window.Huinsight, h = React.createElement;
+function App(){
+  return h("div",{className:"row",style:{alignItems:"stretch"}},
+    h(H.Card,{style:{width:260}},h("div",{className:"uis-eyebrow"},"Cash buffer"),h("div",{className:"uis-num uis-num--kpi",style:{marginTop:8}},"7.7 ",h("span",{style:{fontSize:12,fontWeight:500,color:"var(--color-fg-3)"}},"mo")),h("div",{className:"uis-cell",style:{color:"var(--color-fg-4)",marginTop:10}},"target: 6.0 mo · 100% covered")),
+    h(H.Card,{padding:16,style:{width:220}},h("div",{className:"uis-h3"},"Tight padding"),h("p",{className:"uis-body",style:{margin:"6px 0 0"}},"padding={16} — dense side panels.")));
+}
+ReactDOM.createRoot(document.getElementById("root")).render(h(App));
+})();
+</script></body></html>

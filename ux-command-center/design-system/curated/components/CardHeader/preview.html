@@ -1,0 +1,13 @@
+<!-- @dsCard group="Layout" height=170 -->
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:var(--color-bg);}body{font-family:var(--font-sans);color:var(--color-fg-1);padding:20px;box-sizing:border-box;}*{box-sizing:border-box}.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.col{display:flex;flex-direction:column;gap:14px}.lbl{font:500 10px var(--font-mono);color:var(--color-fg-3);text-transform:uppercase;letter-spacing:.05em;width:84px}</style></head><body><div id="root"></div>
+<script>
+(function () {
+const H = window.Huinsight, h = React.createElement;
+function App(){
+  return h(H.Card,{padding:0},
+    h(H.CardHeader,{icon:"query_stats",title:"Investment returns: missing data and corrections",sub:"Only you can supply these · used by Performance → Returns",right:h(H.Pill,{tone:"warning"},"Action needed")}),
+    h("div",{style:{padding:"16px 20px"}},h("p",{className:"uis-body",style:{margin:0}},"Rows go here.")));
+}
+ReactDOM.createRoot(document.getElementById("root")).render(h(App));
+})();
+</script></body></html>

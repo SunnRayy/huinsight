@@ -1,0 +1,14 @@
+<!-- @dsCard group="Data display" height=150 -->
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:var(--color-bg);}body{font-family:var(--font-sans);color:var(--color-fg-1);padding:20px;box-sizing:border-box;}*{box-sizing:border-box}.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.col{display:flex;flex-direction:column;gap:14px}.lbl{font:500 10px var(--font-mono);color:var(--color-fg-3);text-transform:uppercase;letter-spacing:.05em;width:84px}</style></head><body><div id="root"></div>
+<script>
+(function () {
+const H = window.Huinsight, h = React.createElement;
+function App(){
+  return h("div",{style:{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:14}},
+    h(H.OpsKpi,{label:"Net worth",value:"¥2.70M",sub:"YTD −0.9%",icon:"account_balance"}),
+    h(H.OpsKpi,{label:"vs last month",value:"+¥318.68K",accent:"var(--color-success)",sub:"+13.4% since Jun 2026",subColor:"var(--color-success)",icon:"trending_up"}),
+    h(H.OpsKpi,{label:"Sources healthy",value:"6/7",sub:"1 needs review",subColor:"var(--zone-yellow-fg)",icon:"sync",dense:true}));
+}
+ReactDOM.createRoot(document.getElementById("root")).render(h(App));
+})();
+</script></body></html>

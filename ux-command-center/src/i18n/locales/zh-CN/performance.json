@@ -1,0 +1,361 @@
+{
+  "title": "业绩分析",
+  "liveFeed": "实时数据：{{date}}",
+  "loadingEllipsis": "加载中…",
+  "errorLoadingData": "数据加载失败。",
+  "insufficientData": "数据不足",
+  "exportAiContext": "导出 AI 上下文",
+  "errors": {
+    "overview": "概览数据加载失败，请刷新重试。",
+    "returns": "收益数据加载失败，请刷新重试。",
+    "attribution": "业绩归因数据加载失败，请刷新重试。",
+    "risk": "风险指标数据加载失败，请刷新重试。"
+  },
+  "periods": {
+    "allTime": "全部",
+    "last36m": "近36个月",
+    "last12m": "近12个月"
+  },
+  "tabs": {
+    "overview": "概览",
+    "returns": "收益",
+    "attribution": "业绩归因",
+    "risk": "风险指标"
+  },
+  "waterfall": {
+    "total": "总计",
+    "lifetimePl": "累计盈亏"
+  },
+  "overview": {
+    "lifetimePlContribution": "累计盈亏构成",
+    "cumulative": "（累计）",
+    "totalLifetimePl": "累计盈亏合计",
+    "portfolioValue": "组合市值",
+    "unrealizedPl": "浮动盈亏",
+    "realizedPlFifo": "已实现盈亏（FIFO）",
+    "lifetimePl": "累计盈亏",
+    "assetsTracked": "已追踪 {{count}} 项资产 · 最近同步：{{date}}",
+    "performanceByClass": "各资产类别业绩",
+    "realizedPl": "已实现盈亏",
+    "topBottomPerformers": "投资表现最佳／最差资产",
+    "rankTop": "优{{n}}",
+    "rankBottom": "差{{n}}",
+    "columns": {
+      "class": "类别",
+      "value": "市值",
+      "costBasis": "成本",
+      "returnPct": "收益率",
+      "weightPct": "占比",
+      "rank": "排名",
+      "asset": "资产",
+      "cost": "成本",
+      "marketValue": "市值",
+      "unrealizedPct": "浮动盈亏率",
+      "lifetimePct": "累计收益率"
+    },
+    "noCostBasisRow": "无成本基础（{{count}} 项）— 仅计市值，不计盈亏",
+    "classTotalValue": "含无成本基础持仓的类别总市值：{{value}}",
+    "unrealizedPctHint": "浮动盈亏 ÷ 剩余成本（止损复盘规则使用此口径）",
+    "lifetimePctHint": "累计盈亏 ÷ 累计投入（该持仓历次投入总额）",
+    "xirrTooltip": "年化 XIRR {{xirr}} · 累计投入 {{invested}}",
+    "fxEffectNote": "美元盈亏按今日汇率折算，不含汇率影响",
+    "fxEffectHint": "美元资产的盈亏和成本均按今日美元兑人民币汇率折算，因此投入资金的汇率变动不计入这些盈亏数字。",
+    "bridge": {
+      "toggle": "与「收益率」页如何对账",
+      "loading": "正在生成对账…",
+      "unavailable": "对账不可用：{{reason}}",
+      "overview": "总览累计盈亏",
+      "lines": {
+        "returns_gain": "收益率页投资收益（{{start}} → {{end}}）",
+        "after_window": "收益率区间之后（{{end}} → {{last}}，按收益率页月末数据）",
+        "to_today": "{{last}} → {{today}}（按总览估值）",
+        "fx": "美元投入按今日汇率而非各笔资金当日汇率计算",
+        "before_window": "{{start}} 之前的收益（期初市值 − 此前投入）",
+        "scope": "收益率账户范围之外的资产",
+        "remainder": "两边记录的投入金额不同（按来源列示如下）"
+      },
+      "unexplainedOk": "未解释差额：{{amount}}，低于 {{threshold}} 的阈值。",
+      "unexplainedHigh": "未解释差额：{{amount}}，高于 {{threshold}} 的阈值。",
+      "sourceRemainder": "{{source}}：记录差额 {{amount}}",
+      "items": {
+        "money_in_gap": "{{month}}：收益率资金流水与账本交易记录的投入金额不同",
+        "timing": "{{month}}：同一笔资金记在不同月份（仅时间差）",
+        "smaller_differences": "其他较小的月度差额",
+        "engine_income": "账本计入盈亏的分红、利息和费用"
+      }
+    },
+    "fxEffectLine": "汇率影响（美元投入按今日汇率）：{{amount}}",
+    "xirrUnderOneYear": "持有期不足一年",
+    "xirrTooltipShort": "年化 XIRR {{xirr}}（持有期不足一年，已年化）· 累计投入 {{invested}}"
+  },
+  "returns": {
+    "netWorthOverTime": "家庭总资产走势",
+    "grossAssetsScope": "未扣负债的家庭资产余额；{{start}} 至 {{end}}。历史月度日期只是月份标签，最后一点是最新持仓快照。此图范围大于投资账户 TWR。",
+    "investmentBridge": "投资账户市值变化拆分（估算）",
+    "bridgeScope": "相同投资账户范围，{{start}} 至 {{end}}",
+    "openingValue": "期初市值",
+    "netContribution": "入金减出金（净额）",
+    "investmentGain": "投资盈亏",
+    "closingValue": "期末市值",
+    "bridgeNote": "期初市值＋入金减出金（净额）＋投资盈亏＝期末市值。净投入是本期间从账户外部转入减转出的资金，并非累计买入金额或剩余持仓成本；TWR另按资金进入时间调整。",
+    "unavailableReasons": {
+      "default": "缺少相互匹配的完整估值与资金流水，暂无法计算投资收益。",
+      "source_not_imported": "请上传包含 TWR 外部现金流和估算口径的资金文件。",
+      "missing_twr_tabs": "资金文件缺少 TWR 现金流或估算口径工作表，请补齐后重新上传。",
+      "invalid_twr_tabs": "资金文件中的 TWR 数据不合法，请修正两张工作表后重新上传。",
+      "valuation_changed_or_incomplete": "投资账户估值已变化或不完整，请核对 Financial Summary 并重新上传与之匹配的资金文件。",
+      "coverage_or_valuation_incomplete": "该时间段的月度估值日期或账户金额不完整。"
+    },
+    "axisWan": "¥{{value}}万",
+    "noHistoryData": "暂无历史数据。",
+    "twrCumulative": "TWR（所选区间）",
+    "twrCumulativeDesc": "所选区间的累计收益。",
+    "twrYtd": "TWR（年初至今）",
+    "twrYtdDesc": "年初至今的累计收益。",
+    "twr1y": "TWR（近12个月）",
+    "twr1yDesc": "最近 12 个月的累计收益。",
+    "twrEstimated": "估算",
+    "twrEstimateDetails": "{{start}} 至 {{end}}；月末估值及部分资金到账日期使用近似值。",
+    "twrUnavailable": "缺少完整的投资账户估值或外部现金流，暂无法计算。",
+    "mwrXirr": "XIRR（年化）",
+    "mwrXirrDesc": "考虑资金进出的年化收益。",
+    "candidateNote": "待审核估算：可能包含账户早期零余额、现金流日期和账户现金范围等假设，尚未获得独立批准。所示日期为本次计算范围，不一定涵盖全部投资历史。",
+    "xirrAmbiguity": "已找到一个收益率，但尚不能排除其他 XIRR 解。",
+    "xirrNoSolution": "这些资金流目前无法得到可靠的 XIRR 解。",
+    "liquidAssetsOverTime": "剔除非流动资产后的资产走势",
+    "illiquidIncluded": "包含非流动资产。此图遵循全局资产范围开关；下方收益计算使用独立且固定的投资账户范围。",
+    "illiquidExcluded": "已排除不可再平衡资产（如房产和保险）。此图仍可能包含银行存款、银行理财及债券，它们不在下方收益计算范围内。",
+    "bridgeAccounts": "包含境内基金、Schwab、IBKR、已归属RSU及纸黄金，以及输入估值中已计入的账户现金；不含家庭银行存款、银行理财/债券、养老金、保险及房产。这里是所示历史日期的账户市值，并非今天全部可投资资产；非流动资产开关不改变此计算范围。",
+    "accountChip": "投资账户 · 数据截至 {{asOf}} · 估算",
+    "methodology": "计算方法与数据质量",
+    "accountValue": "投资账户市值",
+    "amountInvested": "净投入金额",
+    "methodDetails": "月度修正迪茨法使用带日期的外部现金流和近似月末账户市值。XIRR 使用相同边界的现金流及期初期末市值。",
+    "reviewState": "复核状态：{{state}}",
+    "review": {
+      "candidate": "待复核估算",
+      "reviewed": "已复核估算"
+    },
+    "closeMethod": "关闭",
+    "inputsBanner": {
+      "corrections": "你上传的 funding_transactions.xlsx 更正了已锁定月份中的 {{count}} 条记录。确认之前，收益仍按原记录计算。",
+      "ttfund": "收益停在 {{end}}：之后的天天基金交易尚未确认。",
+      "link": "前往数据源 →"
+    }
+  },
+  "attribution": {
+    "noData": "暂无业绩归因数据",
+    "portfolioReturn": "组合收益率",
+    "benchmarkReturn": "基准收益率",
+    "excessReturn": "超额收益率",
+    "byClass": "各类别业绩归因",
+    "allTime": "（全部）",
+    "allocation": "配置效应",
+    "selection": "选股效应",
+    "interaction": "交互效应",
+    "columns": {
+      "portW": "组合权重",
+      "benchW": "基准权重",
+      "portR": "组合收益",
+      "benchR": "基准收益",
+      "total": "总计"
+    },
+    "howToRead": {
+      "title": "如何解读业绩归因",
+      "intro": "此视图展示的是<strong>相对基准的贡献度</strong>，而非绝对盈亏排名。",
+      "formula": "贡献度 = (组合权重 - 基准权重) × (类别收益率 - 基准收益率)",
+      "note1": "如果某类别本身亏损，但你对它的配置权重低于基准（低配），仍可能显示正贡献。",
+      "note2": "如果某类别本身盈利，但你对一个强势的基准类别配置不足（低配），仍可能显示负贡献。",
+      "note3": "如需查看各类别的绝对盈亏，请前往「概览」标签页中的资产类别业绩表格。"
+    }
+  },
+  "risk": {
+    "noData": "暂无风险指标数据",
+    "metrics": {
+      "sharpe": {
+        "title": "夏普比率",
+        "description": "衡量每单位总波动率对应的风险调整后收益。大于1.0为佳。"
+      },
+      "sortino": {
+        "title": "索提诺比率",
+        "description": "衡量每单位下行波动率对应的风险调整后收益。大于2.0为优秀。"
+      },
+      "drawdown": {
+        "title": "最大回撤",
+        "description": "从峰值到谷值的最大跌幅。数值越低越好。"
+      },
+      "calmar": {
+        "title": "卡玛比率",
+        "description": "年化收益率 ÷ 最大回撤。大于1.0为佳。"
+      },
+      "volatility": {
+        "title": "年化波动率",
+        "description": "收益率的年化标准差。数值越低风险越小。"
+      },
+      "return": {
+        "title": "总收益率",
+        "description": "自首个数据点以来的组合整体收益率。"
+      }
+    },
+    "status": {
+      "excellent": "优秀",
+      "monitor": "关注",
+      "warning": "警告"
+    },
+    "limitedDataDrawdown": "可能受限于数据量不足。",
+    "limitedDataVolatility": "较高的波动率可能受限于数据量不足。",
+    "basedOnDataPoints": "基于 {{count}} 个数据点",
+    "insufficientDataNote": "（需至少 12 个月收益数据）"
+  },
+  "flows": {
+    "title": "投资账户确认",
+    "loading": "加载中…",
+    "saving": "保存中…",
+    "empty": "暂无待确认事项",
+    "loadError": "无法加载待确认事项。",
+    "saveError": "保存失败，请重试。",
+    "retry": "重试",
+    "noDeposits": "本月没有入金",
+    "enterAmount": "输入金额",
+    "signedAmount": "人民币金额（带正负号）",
+    "save": "保存",
+    "invalidAmount": "请输入非零人民币金额（正数转入，负数转出）。",
+    "externalIn": "外部转入",
+    "externalOut": "外部转出",
+    "internal": "内部划转",
+    "waiting": "{{month}}待补齐：{{items}}",
+    "separator": "、",
+    "latest": "最新日期：{{date}}",
+    "sources": {
+      "TTFund": "天天基金",
+      "Gold": "黄金",
+      "RSU": "限制性股票",
+      "Schwab": "嘉信",
+      "IBKR": "盈透",
+      "Financial Summary": "Financial Summary"
+    },
+    "blockers": {
+      "fs_month_missing": "财务汇总月度记录",
+      "source_data_behind": "{{source}}数据更新",
+      "cn_web_list_missing": "天天基金网站交易清单",
+      "ibkr_cash_transactions_missing": "盈透现金交易记录",
+      "fx_unavailable": "交易日汇率",
+      "open_reviews": "{{count}}项确认",
+      "open_reviews_one": "{{count}}项确认",
+      "open_reviews_other": "{{count}}项确认",
+      "fs_value_check": "待核对的 Financial Summary 数值（{{count}}）"
+    },
+    "reasons": {
+      "cancelledPaid": "请确认已支付的撤单",
+      "status": "请确认交易状态",
+      "bankAccount": "请确认银行资金进出",
+      "cashAction": "请确认现金进出",
+      "transactionType": "请确认交易类型",
+      "commission": "请核对卖出所得与费用",
+      "amount": "请确认金额",
+      "fx": "缺少交易日汇率",
+      "ibkr": "请确认本月入金与出金",
+      "default": "请确认这笔资金变动"
+    },
+    "noActivity": "{{month}}无{{source}}交易",
+    "uploadNewer": "或上传更新的{{source}}文件",
+    "sourceAction": "确认无交易或上传更新的{{source}}文件",
+    "uploadThrough": "请上传更新的{{source}}文件（当前数据截至 {{date}}）",
+    "fsZero": "{{month}}的{{column}}为 0，但月末仍持有约 {{estimate}}——请更正 Financial Summary 该月数据",
+    "fsUnchanged": "{{month}}的{{column}}与上月完全相同（{{value}}）——请更新 Financial Summary 该月数据",
+    "fsValueCorrect": "数值无误",
+    "fsColumns": {
+      "投资资产_股票基金_A股基金": "A股基金",
+      "投资资产_股票基金_美股基金_Schwab": "嘉信 Schwab",
+      "投资资产_股票基金_美股基金_IBKR": "盈透 IBKR",
+      "投资资产_公司RSU_Amazon Stock": "亚马逊 RSU",
+      "投资资产_公司RSU_Google Stock": "谷歌 RSU",
+      "投资资产_黄金_纸黄金(元)": "纸黄金"
+    }
+  },
+  "returnsInputs": {
+    "title": "投资收益：补充数据与更正",
+    "subtitle": "仅能由用户提供 · 用于 业绩 → 收益",
+    "upToDate": "已是最新",
+    "actionNeeded": "需要操作",
+    "whyLabel": "为什么需要这一步",
+    "cancel": "取消",
+    "ttfund": {
+      "title": "天天基金：确认没有交易的月份",
+      "why": "只有当某个月的天天基金交易全部已知时，收益才会计入这个月。没有交易的月份不会在粘贴的列表里留下任何记录，收益就会一直等待。上传覆盖这些日期的导出文件，即可证明已经核对过。",
+      "statusOk_one": "天天基金交易已确认至 <d>{{date}}</d> · {{count}} 个已覆盖期间",
+      "statusOk_other": "天天基金交易已确认至 <d>{{date}}</d> · {{count}} 个已覆盖期间",
+      "statusWaiting": "天天基金交易已确认至 <d>{{date}}</d>——之后的月份确认后，收益才会继续计算。",
+      "showPeriods": "显示已覆盖期间",
+      "hidePeriods": "收起已覆盖期间",
+      "periods": "已覆盖期间",
+      "period": "期间",
+      "source": "来源",
+      "basis": {
+        "cli_pull": "来自天天基金导出",
+        "owner_attestation": "用户声明"
+      },
+      "chip": "天天基金 {{from}} → {{to}}：{{basis}}",
+      "upload": "上传天天基金导出文件 (.json)",
+      "declareToggle": "无法导出？自行声明无交易",
+      "declare": "声明无交易",
+      "step1": "天天基金 · 第 1 步，共 2 步",
+      "step2": "天天基金 · 第 2 步，共 2 步",
+      "intro": "用于无法导出的月份。收益会将该期间视为已核对。",
+      "from": "开始日期",
+      "to": "结束日期",
+      "note": "核对方式",
+      "notePlaceholder": "例如：2026-11-09 在天天基金 App 核对，没有交易",
+      "continue": "下一步",
+      "back": "上一步",
+      "confirm": "确认 {{from}} 至 {{to}} 期间天天基金没有任何交易？",
+      "shownAs": "显示为",
+      "done": "完成。收益现已计算至 {{date}}。",
+      "declareFailed": "声明未能保存。服务器返回：",
+      "uploadFailed": "天天基金导出文件未能导入。服务器返回：",
+      "editDeclaration": "修改声明"
+    },
+    "locked": {
+      "title": "已锁定月份的更正（截至 {{date}}）",
+      "why": "截至锁定日期的月份已经核对过，同步不会再改动。在 funding_transactions.xlsx 中所做的更正，只有在这里确认后才会生效。旧记录会被归档。",
+      "match": "已锁定的记录与上传的文件一致。",
+      "comparing": "正在与上传的文件比对……",
+      "compareAgain": "再次比对",
+      "waitingPill_one": "{{count}} 项更正待处理",
+      "waitingPill_other": "{{count}} 项更正待处理",
+      "summary_one": "{{count}} 条记录不一致；资金流入/流出变动 {{amount}}",
+      "summary_other": "{{count}} 条记录不一致；资金流入/流出变动 {{amount}}",
+      "record": "记录",
+      "date": "日期",
+      "now": "当前",
+      "inFile": "文件中",
+      "change": {
+        "added": "新增",
+        "removed": "删除",
+        "changed": "修改"
+      },
+      "textOnly_one": "另有 {{count}} 条记录仅备注或文件路径不同——数字均无变化",
+      "textOnly_other": "另有 {{count}} 条记录仅备注或文件路径不同——数字均无变化",
+      "valuesChanged": "截至 {{date}} 的月末值自上次确认后已有变化",
+      "reviewer": "确认人",
+      "evidence": "原因（对账单或参考编号）",
+      "apply": "使用更正后的记录",
+      "fillBoth": "填写以上两项后即可继续。",
+      "modalSub": "已锁定月份 · 截至 {{date}}",
+      "confirm": "用文件中的记录替换截至 {{date}} 的已锁定记录，并重新计算收益？",
+      "confirmCount_one": "替换 {{count}} 条记录 · 资金流入/流出 {{amount}}",
+      "confirmCount_other": "替换 {{count}} 条记录 · 资金流入/流出 {{amount}}",
+      "confirmBy": "确认人 {{name}} · {{reason}}",
+      "archived": "旧记录会被归档。",
+      "replace": "替换并重新计算",
+      "done": "完成。截至 {{date}} 的已锁定记录已替换，收益已重新计算。",
+      "applyFailed": "已锁定记录未能替换。服务器返回：",
+      "compareFailed": "未能与上传的文件比对。服务器返回：",
+      "unavailable": {
+        "no_frozen_history": "还没有锁定的月份。",
+        "workbook_missing": "尚未上传 funding_transactions.xlsx。",
+        "twr_tabs_missing": "funding_transactions.xlsx 中没有“TWR外部现金流”工作表。"
+      }
+    }
+  }
+}

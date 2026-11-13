@@ -1,0 +1,334 @@
+{
+  "_about": "Hand-kept parts of the Huinsight design system that the stylesheet cannot say. Values come from the stylesheet; this file adds names, usage notes and the type scale. build.mjs warns when a variable has no note here, and when a note names a variable the stylesheet no longer defines.",
+  "name": "Huinsight",
+  "artifact": "",
+  "source": {
+    "repo": "huinsight",
+    "package": "ux-command-center",
+    "css": "src/styles/colors_and_type.css",
+    "locales": "src/i18n/locales/en/operations.json"
+  },
+  "themes": [
+    {
+      "id": "day",
+      "name": "Day",
+      "selector": ":root"
+    },
+    {
+      "id": "night",
+      "name": "Night",
+      "selector": "[data-theme=\"night\"]"
+    }
+  ],
+  "skip": [
+    "font-cjk"
+  ],
+  "familyKeys": {
+    "font-sans": "sans",
+    "font-display": "display",
+    "font-mono": "mono"
+  },
+  "usage": {
+    "color-primary": "Brand blue, identical in Day and Night. Primary buttons, links, active nav, the brand-mark tile, focus accents. White text on it is 3.7:1 — fine for the bold 11px+ button labels the product uses only as large/bold UI; prefer it for fills and icons over body text.",
+    "color-primary-hover": "Hover state of color-primary fills and link hover.",
+    "brand-spark": "Gold accent of the brand mark's six iris facets. Mark-only; never a UI state colour.",
+    "brand-mark-hole": "Pupil of the brand mark. Must equal the surface the mark sits on (it reads as a hole punched through the iris); defaults to the color-primary tile.",
+    "color-investment": "Indigo for investment-category data (flows, invested amounts) in charts and tags.",
+    "color-success": "Positive P&L, healthy status dots, ok source chips. A fill/indicator colour — for text on soft fills use zone-green-fg.",
+    "color-warning": "Review/caution status dots and drift within tolerance. Indicator only — text on fills uses zone-yellow-fg.",
+    "color-danger": "Negative P&L, errors, high severity, destructive buttons (white label). Text on soft fills uses zone-red-fg.",
+    "color-bg": "Page background behind cards.",
+    "color-card": "Card, KPI tile, table and modal surfaces.",
+    "color-surface": "Raised/hover surface inside cards (Night: one step above card).",
+    "color-sidebar": "App sidebar background.",
+    "color-border": "1px borders on cards, inputs, buttons; table header rule.",
+    "color-border-soft": "Row dividers, modal header/footer rules, toolbar and gauge track fills.",
+    "color-fg-1": "Headings, KPI values, input text — on color-bg, color-card, color-surface.",
+    "color-fg-2": "Body copy and table cells on color-card and color-bg.",
+    "color-fg-3": "Secondary text, eyebrows, neutral pill text, section icons on color-card (4.8:1 Day).",
+    "color-fg-4": "Muted text: table headers, axis ticks, sub-labels, placeholder icons. Below 4.5:1 on card in both themes (source value kept) — use for non-essential labels only.",
+    "color-fg-5": "Hairlines and disabled glyphs; never text.",
+    "fill-primary-soft": "Soft blue fill: primary pill/badge, selected table row, active nav item.",
+    "fill-success-soft": "Success pill/badge ground; text zone-green-fg.",
+    "fill-warning-soft": "Warning pill/badge ground; text zone-yellow-fg.",
+    "fill-danger-soft": "Danger pill/badge ground; text zone-red-fg.",
+    "fill-neutral-soft": "Neutral pill/badge ground; text color-fg-3.",
+    "zone-green": "Sentiment scale step 1 (best).",
+    "zone-light-green": "Sentiment scale step 2.",
+    "zone-yellow": "Sentiment scale step 3 (neutral).",
+    "zone-orange": "Sentiment scale step 4.",
+    "zone-red": "Sentiment scale step 5 (worst).",
+    "zone-green-fg": "Text on fill-success-soft; Night positive P&L text.",
+    "zone-yellow-fg": "Text on fill-warning-soft.",
+    "zone-orange-fg": "Text on an orange zone soft fill.",
+    "zone-red-fg": "Text on fill-danger-soft; Night negative P&L text.",
+    "chart-1": "Dashboard chart series 1 — net-worth line and area, MiniLine stroke.",
+    "chart-2": "Chart series 2.",
+    "chart-3": "Chart series 3.",
+    "chart-4": "Chart series 4.",
+    "chart-5": "Chart series 5.",
+    "scrollbar-thumb": "6px scrollbar thumb.",
+    "scrollbar-thumb-hover": "Scrollbar thumb on hover.",
+    "space-1": "Icon-to-label gaps in pills.",
+    "space-2": "Button/chip inner gaps, toolbar gaps.",
+    "space-3": "Section-title gap, row cell padding.",
+    "space-4": "Tight card padding, modal body.",
+    "space-5": "Default card padding (Card, uis-card).",
+    "space-6": "Large card padding.",
+    "space-8": "Page gutter.",
+    "space-10": "Large vertical breaks between page bands.",
+    "radius-sm": "Pills and badges.",
+    "radius-md": "Form inputs, IconBtn.",
+    "radius-lg": "Buttons, chips, nav items, search/select.",
+    "radius-xl": "Cards, KPI tiles, modals — the default container radius.",
+    "radius-full": "Avatars and dots.",
+    "shadow-sm": "Every card and KPI tile.",
+    "shadow-md": "Menus and popovers.",
+    "shadow-lg": "Floating panels.",
+    "shadow-xl": "Large overlays.",
+    "shadow-2xl": "Modals (ModalShell).",
+    "shadow-primary-glow": "Primary buttons only.",
+    "fs-h1": "Page titles, hero KPIs (text-2xl).",
+    "fs-h2": "Large KPIs on Compass (text-xl).",
+    "fs-h3": "Section headings.",
+    "fs-body": "Root body size.",
+    "fs-body-sm": "Default row text.",
+    "fs-cell": "Table cells.",
+    "fs-eyebrow": "Uppercase labels.",
+    "tracking-wider": "Eyebrow labels.",
+    "tracking-widest": "Breadcrumbs."
+  },
+  "typeGroups": [
+    {
+      "name": "Headings",
+      "family": "sans",
+      "styles": [
+        {
+          "name": "uis-h1",
+          "fontSize": "{fs-h1}",
+          "lineHeight": 1.2,
+          "fontWeight": 700,
+          "letterSpacing": "-0.01em",
+          "sample": "Unified Portfolio",
+          "usage": "Page titles (fs-h1). color-fg-1."
+        },
+        {
+          "name": "uis-h3",
+          "fontSize": "{fs-h3}",
+          "lineHeight": 1.4,
+          "fontWeight": 700,
+          "sample": "Net Worth Trend",
+          "usage": "Section and card headings (fs-h3); SectionTitle, ModalShell title. color-fg-1."
+        }
+      ]
+    },
+    {
+      "name": "Text",
+      "family": "sans",
+      "styles": [
+        {
+          "name": "uis-base",
+          "fontSize": "{fs-body}",
+          "lineHeight": 1.5,
+          "fontWeight": 400,
+          "sample": "Self-hosted personal finance and portfolio analytics.",
+          "usage": "Root text size (fs-body) on .uis-root / body.uis."
+        },
+        {
+          "name": "uis-body",
+          "fontSize": "{fs-body-sm}",
+          "lineHeight": 1.55,
+          "fontWeight": 400,
+          "sample": "All portfolio values shown in CNY",
+          "usage": "Default row and paragraph text (fs-body-sm). color-fg-2."
+        },
+        {
+          "name": "uis-eyebrow",
+          "fontSize": "{fs-eyebrow}",
+          "lineHeight": 1.4,
+          "fontWeight": 700,
+          "letterSpacing": "0.05em",
+          "sample": "NET WORTH",
+          "usage": "Uppercase labels above KPIs and fields (fs-eyebrow, tracking-wider). Always uppercase. color-fg-3."
+        },
+        {
+          "name": "uis-breadcrumb",
+          "fontSize": "{fs-body-sm}",
+          "lineHeight": 1.4,
+          "fontWeight": 400,
+          "letterSpacing": "0.1em",
+          "sample": "PORTFOLIO / PERFORMANCE",
+          "usage": "Uppercase breadcrumbs (tracking-widest). color-fg-3."
+        }
+      ]
+    },
+    {
+      "name": "Numbers",
+      "family": "mono",
+      "styles": [
+        {
+          "name": "uis-num-kpi",
+          "fontSize": "{fs-h1}",
+          "lineHeight": 1.2,
+          "fontWeight": 700,
+          "sample": "¥2.70M",
+          "usage": "Hero KPI values (OpsKpi). Tabular numerals."
+        },
+        {
+          "name": "uis-h2",
+          "fontSize": "{fs-h2}",
+          "lineHeight": 1.25,
+          "fontWeight": 500,
+          "sample": "+¥318.68K",
+          "usage": "Large KPIs on Compass (fs-h2), mono."
+        },
+        {
+          "name": "uis-cell",
+          "fontSize": "{fs-cell}",
+          "lineHeight": 1.45,
+          "fontWeight": 400,
+          "sample": "USD/CNY 6.7205",
+          "usage": "Mono table cells, chip and button labels, sub-lines (fs-cell). color-fg-2."
+        },
+        {
+          "name": "uis-num-cell",
+          "fontSize": "{fs-cell}",
+          "lineHeight": 1.45,
+          "fontWeight": 500,
+          "sample": "+152.7%",
+          "usage": "Numbers inside table cells; tabular numerals."
+        }
+      ]
+    }
+  ],
+  "bundle": {
+    "namespace": "Huinsight",
+    "exports": [
+      {
+        "from": "components/operations/Icon",
+        "names": [
+          "Icon"
+        ]
+      },
+      {
+        "from": "components/operations/Pill",
+        "names": [
+          "Pill",
+          "StatusPill"
+        ]
+      },
+      {
+        "from": "components/operations/Card",
+        "names": [
+          "Card"
+        ]
+      },
+      {
+        "from": "components/operations/CardHeader",
+        "names": [
+          "CardHeader"
+        ]
+      },
+      {
+        "from": "components/operations/Section",
+        "names": [
+          "Section",
+          "SectionTitle"
+        ]
+      },
+      {
+        "from": "components/operations/OpsKpi",
+        "names": [
+          "OpsKpi"
+        ]
+      },
+      {
+        "from": "components/operations/DriftGauge",
+        "names": [
+          "DriftRow",
+          "DriftGauge"
+        ]
+      },
+      {
+        "from": "components/operations/MiniLine",
+        "names": [
+          "MiniLine"
+        ]
+      },
+      {
+        "from": "components/operations/Indicators",
+        "names": [
+          "SourceChip",
+          "SevDot"
+        ]
+      },
+      {
+        "from": "components/operations/OpsTable",
+        "names": [
+          "OpsTable"
+        ]
+      },
+      {
+        "from": "components/operations/Buttons",
+        "names": [
+          "ChipBtn",
+          "ActionBtn",
+          "IconBtn"
+        ]
+      },
+      {
+        "from": "components/operations/Toolbar",
+        "names": [
+          "Toolbar",
+          "SearchInput",
+          "OpsSelect"
+        ]
+      },
+      {
+        "from": "components/operations/ModalShell",
+        "names": [
+          "ModalShell",
+          "FieldLabel",
+          "FormInput",
+          "FormSelect",
+          "FormTextarea"
+        ]
+      },
+      {
+        "from": "components/operations/InfoTip",
+        "names": [
+          "InfoTip"
+        ]
+      },
+      {
+        "from": "components/operations/Notice",
+        "names": [
+          "Notice"
+        ]
+      },
+      {
+        "from": "components/BrandMark",
+        "names": [
+          "BrandMark"
+        ]
+      }
+    ],
+    "notBundled": {
+      "PipelinePanel": "calls the live Operations API",
+      "fmtCNY": "formatter, not a component",
+      "fmtPct": "formatter, not a component"
+    },
+    "kitIndex": "components/operations/index.ts"
+  },
+  "logos": {
+    "icon-mark.svg": "src/assets/icon-mark.svg",
+    "mark-1024.png": "../docs/assets/mark-1024.png",
+    "app-icon-512.png": "public/icons/app-icon-512.png",
+    "app-icon-192.png": "public/icons/app-icon-192.png",
+    "apple-touch-icon.png": "public/apple-touch-icon.png",
+    "favicon-48.png": "public/favicon-48.png",
+    "favicon-32.png": "public/favicon-32.png",
+    "favicon-16.png": "public/favicon-16.png",
+    "social-card.png": "../docs/assets/social-card.png"
+  }
+}

@@ -1,0 +1,18 @@
+<!-- @dsCard group="Foundations" height=96 -->
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:var(--color-bg);}body{font-family:var(--font-sans);color:var(--color-fg-1);padding:20px;box-sizing:border-box;}*{box-sizing:border-box}.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.col{display:flex;flex-direction:column;gap:14px}.lbl{font:500 10px var(--font-mono);color:var(--color-fg-3);text-transform:uppercase;letter-spacing:.05em;width:84px}</style></head><body><div id="root"></div>
+<script>
+(function () {
+const H = window.Huinsight, h = React.createElement;
+function App(){
+  const names=["dashboard","trending_up","account_balance_wallet","sync","bolt","notifications","settings","warning"];
+  return h("div",{className:"col"},
+    h("div",{className:"row",style:{gap:18,color:"var(--color-fg-2)"}},names.map(n=>h(H.Icon,{key:n,name:n,size:22}))),
+    h("div",{className:"row",style:{gap:18}},
+      h(H.Icon,{name:"star",size:22,fill:true,color:"var(--brand-spark)"}),
+      h(H.Icon,{name:"check_circle",size:22,fill:true,color:"var(--color-success)"}),
+      h(H.Icon,{name:"error",size:22,fill:true,color:"var(--color-danger)"}),
+      h(H.Icon,{name:"info",size:14,color:"var(--color-fg-4)"})));
+}
+ReactDOM.createRoot(document.getElementById("root")).render(h(App));
+})();
+</script></body></html>

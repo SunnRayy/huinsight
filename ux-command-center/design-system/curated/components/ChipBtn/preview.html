@@ -1,0 +1,15 @@
+<!-- @dsCard group="Actions" height=150 -->
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:var(--color-bg);}body{font-family:var(--font-sans);color:var(--color-fg-1);padding:20px;box-sizing:border-box;}*{box-sizing:border-box}.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.col{display:flex;flex-direction:column;gap:14px}.lbl{font:500 10px var(--font-mono);color:var(--color-fg-3);text-transform:uppercase;letter-spacing:.05em;width:84px}</style></head><body><div id="root"></div>
+<script>
+(function () {
+const H = window.Huinsight, h = React.createElement;
+function App(){
+  const n=()=>{};
+  return h("div",{className:"col"},
+    h("div",{className:"row"},h("span",{className:"lbl"},"ChipBtn"),h(H.ChipBtn,{icon:"bolt",onClick:n},"Export AI Context"),h(H.ChipBtn,{icon:"sync",primary:true,onClick:n},"Sync All"),h(H.ChipBtn,{icon:"block",disabled:true},"Disabled")),
+    h("div",{className:"row"},h("span",{className:"lbl"},"ActionBtn"),h(H.ActionBtn,{icon:"check",variant:"primary",onClick:n},"Approve"),h(H.ActionBtn,{icon:"edit",onClick:n},"Edit"),h(H.ActionBtn,{icon:"delete",danger:true,onClick:n},"Delete")),
+    h("div",{className:"row"},h("span",{className:"lbl"},"IconBtn"),h(H.IconBtn,{icon:"edit",title:"Edit",onClick:n}),h(H.IconBtn,{icon:"refresh",title:"Retry",onClick:n}),h(H.IconBtn,{icon:"delete",title:"Delete",danger:true,onClick:n})));
+}
+ReactDOM.createRoot(document.getElementById("root")).render(h(App));
+})();
+</script></body></html>

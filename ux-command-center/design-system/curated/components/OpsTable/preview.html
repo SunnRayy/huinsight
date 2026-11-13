@@ -1,0 +1,13 @@
+<!-- @dsCard group="Data display" height=230 -->
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:var(--color-bg);}body{font-family:var(--font-sans);color:var(--color-fg-1);padding:20px;box-sizing:border-box;}*{box-sizing:border-box}.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.col{display:flex;flex-direction:column;gap:14px}.lbl{font:500 10px var(--font-mono);color:var(--color-fg-3);text-transform:uppercase;letter-spacing:.05em;width:84px}</style></head><body><div id="root"></div>
+<script>
+(function () {
+const H = window.Huinsight, h = React.createElement;
+function App(){
+  const rows=[{a:"US_STK_IEFA",s:"Schwab_CSV",v:"¥231,000",st:"ok"},{a:"CN_FUND_110020",s:"CN_Fund_Excel",v:"¥86,000",st:"review"},{a:"ALTS_Paper_Gold",s:"Gold_Excel",v:"¥43,000",st:"ok"}];
+  const cols=[{label:"Asset",key:"a",mono:true},{label:"Source",key:"s",color:"var(--color-fg-3)"},{label:"Value",key:"v",mono:true,align:"right",nowrap:true},{label:"Status",render:r=>h(H.StatusPill,{status:r.st}),align:"right"}];
+  return h(H.Card,{padding:0},h(H.OpsTable,{cols,rows,rowKey:r=>r.a,selectedKey:"CN_FUND_110020",onRowClick:()=>{}}));
+}
+ReactDOM.createRoot(document.getElementById("root")).render(h(App));
+})();
+</script></body></html>

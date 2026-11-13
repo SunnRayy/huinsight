@@ -1,0 +1,361 @@
+{
+  "title": "Performance Analysis",
+  "liveFeed": "Live Feed: {{date}}",
+  "loadingEllipsis": "Loading...",
+  "errorLoadingData": "Error loading data.",
+  "insufficientData": "Insufficient data",
+  "exportAiContext": "Export AI Context",
+  "errors": {
+    "overview": "Unable to load overview data. Please refresh.",
+    "returns": "Unable to load returns data. Please refresh.",
+    "attribution": "Unable to load attribution data. Please refresh.",
+    "risk": "Unable to load risk metrics data. Please refresh."
+  },
+  "periods": {
+    "allTime": "All Time",
+    "last36m": "Last 36M",
+    "last12m": "Last 12M"
+  },
+  "tabs": {
+    "overview": "Overview",
+    "returns": "Returns",
+    "attribution": "Attribution",
+    "risk": "Risk Metrics"
+  },
+  "waterfall": {
+    "total": "Total",
+    "lifetimePl": "Lifetime P&L"
+  },
+  "overview": {
+    "lifetimePlContribution": "Lifetime P&L Contribution",
+    "cumulative": "(Cumulative)",
+    "totalLifetimePl": "Total Lifetime P&L",
+    "portfolioValue": "Portfolio Value",
+    "unrealizedPl": "Unrealized P&L",
+    "realizedPlFifo": "Realized P&L (FIFO)",
+    "lifetimePl": "Lifetime P&L",
+    "assetsTracked": "{{count}} assets tracked · Last sync: {{date}}",
+    "performanceByClass": "Performance by Asset Class",
+    "realizedPl": "Realized P&L",
+    "topBottomPerformers": "Top / Bottom Investment Performers",
+    "rankTop": "Top {{n}}",
+    "rankBottom": "Bot {{n}}",
+    "columns": {
+      "class": "Class",
+      "value": "Value",
+      "costBasis": "Cost Basis",
+      "returnPct": "Return %",
+      "weightPct": "Weight %",
+      "rank": "Rank",
+      "asset": "Asset",
+      "cost": "Cost",
+      "marketValue": "Market Value",
+      "unrealizedPct": "Unrealized %",
+      "lifetimePct": "Lifetime return %"
+    },
+    "noCostBasisRow": "No cost basis ({{count}} positions) — value only, no P&L",
+    "classTotalValue": "Class total incl. positions without cost basis: {{value}}",
+    "unrealizedPctHint": "Unrealized P&L ÷ remaining cost (the loss-review rule uses this)",
+    "lifetimePctHint": "Lifetime P&L ÷ total invested (everything ever put into the position)",
+    "xirrTooltip": "XIRR {{xirr}} per year · total invested {{invested}}",
+    "fxEffectNote": "USD P&L at today's rate, FX effect excluded",
+    "fxEffectHint": "USD gains and costs are converted to CNY at today's USD/CNY rate, so currency moves on the money invested are not in these P&L figures.",
+    "bridge": {
+      "toggle": "How this reconciles with the Returns page",
+      "loading": "Building the bridge…",
+      "unavailable": "Bridge unavailable: {{reason}}",
+      "overview": "Overview lifetime P&L",
+      "lines": {
+        "returns_gain": "Returns investment gain ({{start}} → {{end}})",
+        "after_window": "After the Returns window ({{end}} → {{last}}, Returns' month-end values)",
+        "to_today": "{{last}} → {{today}} (Overview valuation)",
+        "fx": "USD money in at today's rate instead of each flow's own date rate",
+        "before_window": "Gain before {{start}} (opening value − money put in before it)",
+        "scope": "Assets outside the Returns accounts",
+        "remainder": "Money-in records differ (by source below)"
+      },
+      "unexplainedOk": "Unexplained: {{amount}}, under the {{threshold}} threshold.",
+      "unexplainedHigh": "Unexplained: {{amount}}, above the {{threshold}} threshold.",
+      "sourceRemainder": "{{source}}: records differ by {{amount}}",
+      "items": {
+        "money_in_gap": "{{month}}: Returns flows and the ledger trades record different money in",
+        "timing": "{{month}}: same money, dated in different months (timing only)",
+        "smaller_differences": "Smaller monthly differences",
+        "engine_income": "Dividends, interest and fees the ledger counts as P&L"
+      }
+    },
+    "fxEffectLine": "FX effect (USD money in at today's rate): {{amount}}",
+    "xirrUnderOneYear": "Held under 1 year",
+    "xirrTooltipShort": "XIRR {{xirr}} per year (annualized; held under one year) · total invested {{invested}}"
+  },
+  "returns": {
+    "netWorthOverTime": "Gross assets over time",
+    "grossAssetsScope": "Household assets before liabilities; {{start}} to {{end}}. Historical monthly dates are labels, followed by the latest holdings snapshot. This chart has a wider scope than investment TWR.",
+    "investmentBridge": "Investment account value bridge (estimate)",
+    "bridgeScope": "Same investment account boundary, {{start}} to {{end}}",
+    "openingValue": "Opening value",
+    "netContribution": "Net deposits minus withdrawals",
+    "investmentGain": "Investment gain / loss",
+    "closingValue": "Closing value",
+    "bridgeNote": "Opening value + net deposits minus withdrawals + investment gain = closing value. Net contributions are external money added during this period, not cumulative purchases or remaining cost basis. TWR also adjusts for flow timing.",
+    "unavailableReasons": {
+      "default": "Investment return is unavailable because a complete matching value and flow series is missing.",
+      "source_not_imported": "Import a funding workbook with TWR flows and estimate metadata.",
+      "missing_twr_tabs": "The funding workbook is missing TWR flow or estimate tabs. Reimport both tabs together.",
+      "invalid_twr_tabs": "The funding workbook has invalid TWR inputs. Correct both tabs and reimport.",
+      "valuation_changed_or_incomplete": "Investment valuations changed or are incomplete. Check the Financial Summary and reimport the matching funding workbook.",
+      "coverage_or_valuation_incomplete": "Investment valuation dates or account values are incomplete for this return window."
+    },
+    "axisWan": "¥{{value}}w",
+    "noHistoryData": "No history data available.",
+    "twrCumulative": "TWR (window)",
+    "twrCumulativeDesc": "Growth over the selected window.",
+    "twrYtd": "TWR YTD",
+    "twrYtdDesc": "Growth since year start.",
+    "twr1y": "TWR 1Y",
+    "twr1yDesc": "Growth over the latest 12 months.",
+    "twrEstimated": "estimate",
+    "twrEstimateDetails": "{{start}} to {{end}}; month-end values and some cash settlement dates are approximate.",
+    "twrUnavailable": "Complete investment values or external flows are missing; return unavailable.",
+    "mwrXirr": "XIRR (annualized)",
+    "mwrXirrDesc": "Your money-weighted annual return.",
+    "candidateNote": "Unreviewed estimate: inputs may include assumptions about opening balances, cash-flow dates and account cash coverage. The dates shown are the calculation window, not necessarily the full investment history.",
+    "xirrAmbiguity": "A rate was found, but additional XIRR solutions have not been ruled out.",
+    "xirrNoSolution": "A reliable XIRR solution is unavailable for these cash flows.",
+    "liquidAssetsOverTime": "Assets excluding illiquid holdings",
+    "illiquidIncluded": "Includes illiquid assets. This chart follows the portfolio scope switch; the return calculations below use their own fixed investment-account scope.",
+    "illiquidExcluded": "Excludes non-rebalanceable assets (such as property and insurance). Bank deposits and bank wealth/bonds can still be included here; they are outside the return calculation below.",
+    "bridgeAccounts": "Covers CN funds, Schwab, IBKR, vested RSUs and paper gold, including account cash captured in the input valuations. Excludes household bank deposits, bank wealth/bonds, pension, insurance and property. These are historical account values, not today’s total investable assets; the illiquid-assets switch does not change this calculation.",
+    "accountChip": "Investment accounts · data through {{asOf}} · estimate",
+    "methodology": "Methodology & data quality",
+    "accountValue": "Investment account value",
+    "amountInvested": "Net amount invested",
+    "methodDetails": "Monthly Modified Dietz uses dated external flows and approximate month-end account values. XIRR uses the same boundary flows and endpoint values.",
+    "reviewState": "Review: {{state}}",
+    "review": {
+      "candidate": "unreviewed estimate",
+      "reviewed": "reviewed estimate"
+    },
+    "closeMethod": "Close",
+    "inputsBanner": {
+      "corrections": "The funding_transactions.xlsx you uploaded corrects {{count}} record(s) in months that are already locked. Returns still use the old records until you confirm the correction.",
+      "ttfund": "Returns stop at {{end}}: TTFund trades after that are not confirmed yet.",
+      "link": "Go to Data Sources →"
+    }
+  },
+  "attribution": {
+    "noData": "No attribution data available",
+    "portfolioReturn": "Portfolio Return",
+    "benchmarkReturn": "Benchmark Return",
+    "excessReturn": "Excess Return",
+    "byClass": "Attribution by Class",
+    "allTime": "(All Time)",
+    "allocation": "Allocation",
+    "selection": "Selection",
+    "interaction": "Interaction",
+    "columns": {
+      "portW": "Port.W",
+      "benchW": "Bench.W",
+      "portR": "Port.R",
+      "benchR": "Bench.R",
+      "total": "Total"
+    },
+    "howToRead": {
+      "title": "How to Read Attribution",
+      "intro": "This view shows <strong>relative contribution vs benchmark</strong>, not absolute profit ranking.",
+      "formula": "Contribution = (Port.W - Bench.W) × (Class Return - Benchmark Return)",
+      "note1": "If a class loses money but you are underweight it, it can still show a positive contribution.",
+      "note2": "If a class makes money but you are underweight a strong benchmark class, it can show a negative contribution.",
+      "note3": "For absolute gain/loss by class, use the Performance by Class table in the Overview tab."
+    }
+  },
+  "risk": {
+    "noData": "No risk metrics data available",
+    "metrics": {
+      "sharpe": {
+        "title": "Sharpe Ratio",
+        "description": "Risk-adjusted return per unit of total volatility. > 1.0 is good."
+      },
+      "sortino": {
+        "title": "Sortino Ratio",
+        "description": "Risk-adjusted return per unit of downside volatility. > 2.0 is excellent."
+      },
+      "drawdown": {
+        "title": "Max Drawdown",
+        "description": "Largest peak-to-trough decline. Lower is better."
+      },
+      "calmar": {
+        "title": "Calmar Ratio",
+        "description": "Annualized return ÷ Max Drawdown. > 1.0 is good."
+      },
+      "volatility": {
+        "title": "Annual Volatility",
+        "description": "Annualized standard deviation of returns. Lower = less risk."
+      },
+      "return": {
+        "title": "Total Return",
+        "description": "Overall portfolio return since first data point."
+      }
+    },
+    "status": {
+      "excellent": "Excellent",
+      "monitor": "Monitor",
+      "warning": "Warning"
+    },
+    "limitedDataDrawdown": "May reflect limited data.",
+    "limitedDataVolatility": "High volatility may reflect limited data.",
+    "basedOnDataPoints": "Based on {{count}} data points",
+    "insufficientDataNote": " (Need 12+ monthly returns)"
+  },
+  "flows": {
+    "title": "Investment account confirmations",
+    "loading": "Loading…",
+    "saving": "Saving…",
+    "empty": "Nothing to confirm",
+    "loadError": "Could not load confirmations.",
+    "saveError": "Could not save. Please try again.",
+    "retry": "Retry",
+    "noDeposits": "No deposits this month",
+    "enterAmount": "Enter amount",
+    "signedAmount": "Signed amount (CNY)",
+    "save": "Save",
+    "invalidAmount": "Enter a nonzero CNY amount (+ in, − out).",
+    "externalIn": "External in",
+    "externalOut": "External out",
+    "internal": "Internal",
+    "waiting": "{{month}} waiting for: {{items}}",
+    "separator": ", ",
+    "latest": "latest: {{date}}",
+    "sources": {
+      "TTFund": "TTFund",
+      "Gold": "Gold",
+      "RSU": "RSU",
+      "Schwab": "Schwab",
+      "IBKR": "IBKR",
+      "Financial Summary": "Financial Summary"
+    },
+    "blockers": {
+      "fs_month_missing": "Financial Summary row",
+      "source_data_behind": "{{source}} update",
+      "cn_web_list_missing": "TTFund website list",
+      "ibkr_cash_transactions_missing": "IBKR cash transactions",
+      "fx_unavailable": "dated exchange rate",
+      "open_reviews_one": "{{count}} confirmation",
+      "open_reviews_other": "{{count}} confirmations",
+      "open_reviews": "{{count}} confirmations",
+      "fs_value_check": "Financial Summary values to check ({{count}})"
+    },
+    "reasons": {
+      "cancelledPaid": "Confirm the paid cancellation",
+      "status": "Confirm transaction status",
+      "bankAccount": "Confirm the bank movement",
+      "cashAction": "Confirm the cash movement",
+      "transactionType": "Confirm the transaction",
+      "commission": "Check sale proceeds and fees",
+      "amount": "Confirm the amount",
+      "fx": "Dated exchange rate missing",
+      "ibkr": "Confirm monthly deposits / withdrawals",
+      "default": "Confirm this movement"
+    },
+    "noActivity": "No {{source}} activity in {{month}}",
+    "uploadNewer": "or upload a newer {{source}} file",
+    "sourceAction": "confirm no activity or upload a newer {{source}} file",
+    "uploadThrough": "Upload a newer {{source}} file (current data ends {{date}})",
+    "fsZero": "{{column}} is 0 for {{month}}, but about {{estimate}} was still held at month-end — please correct the Financial Summary row",
+    "fsUnchanged": "{{column}} for {{month}} equals last month exactly ({{value}}) — please update the Financial Summary row",
+    "fsValueCorrect": "Value is correct",
+    "fsColumns": {
+      "投资资产_股票基金_A股基金": "A-share funds",
+      "投资资产_股票基金_美股基金_Schwab": "Schwab",
+      "投资资产_股票基金_美股基金_IBKR": "IBKR",
+      "投资资产_公司RSU_Amazon Stock": "Amazon RSU",
+      "投资资产_公司RSU_Google Stock": "Google RSU",
+      "投资资产_黄金_纸黄金(元)": "Paper gold"
+    }
+  },
+  "returnsInputs": {
+    "title": "Investment returns: missing data and corrections",
+    "subtitle": "Only you can supply these · used by Performance → Returns",
+    "upToDate": "Up to date",
+    "actionNeeded": "Action needed",
+    "whyLabel": "Why this is needed",
+    "cancel": "Cancel",
+    "ttfund": {
+      "title": "TTFund — confirm the months with no trades",
+      "why": "Returns add a month only once every TTFund trade in it is known. A month with no trades leaves nothing in the pasted list, so Returns wait. An export covering those days proves it was checked.",
+      "statusOk_one": "TTFund trades confirmed through <d>{{date}}</d> · {{count}} coverage period",
+      "statusOk_other": "TTFund trades confirmed through <d>{{date}}</d> · {{count}} coverage periods",
+      "statusWaiting": "TTFund trades confirmed through <d>{{date}}</d> — Returns wait until the later months are confirmed.",
+      "showPeriods": "Show coverage periods",
+      "hidePeriods": "Hide coverage periods",
+      "periods": "Coverage periods",
+      "period": "Period",
+      "source": "Source",
+      "basis": {
+        "cli_pull": "From TTFund export",
+        "owner_attestation": "Declared by you"
+      },
+      "chip": "TTFund {{from}} → {{to}}: {{basis}}",
+      "upload": "Upload TTFund export (.json)",
+      "declareToggle": "Can't export? Declare no trades yourself",
+      "declare": "Declare no trades",
+      "step1": "TTFund · Step 1 of 2",
+      "step2": "TTFund · Step 2 of 2",
+      "intro": "For months you can't export. Returns will treat the period as checked.",
+      "from": "From",
+      "to": "To",
+      "note": "How you checked",
+      "notePlaceholder": "e.g. Checked the TTFund app on 2026-11-09: no trades",
+      "continue": "Continue",
+      "back": "Back",
+      "confirm": "Confirm there were no TTFund trades from {{from}} to {{to}}?",
+      "shownAs": "Shown as",
+      "done": "Done. Returns are now calculated through {{date}}.",
+      "declareFailed": "Couldn't save the declaration. The server said:",
+      "uploadFailed": "Couldn't import the TTFund export. The server said:",
+      "editDeclaration": "Edit declaration"
+    },
+    "locked": {
+      "title": "Corrections to locked months, up to {{date}}",
+      "why": "Months up to the lock date were already reviewed, so a sync never changes them. A correction made in funding_transactions.xlsx only takes effect when you confirm it here. The old records are archived.",
+      "match": "Locked records match the uploaded file.",
+      "comparing": "Comparing with the uploaded file…",
+      "compareAgain": "Compare again",
+      "waitingPill_one": "{{count}} correction waiting",
+      "waitingPill_other": "{{count}} corrections waiting",
+      "summary_one": "{{count}} record differs; money in/out changes by {{amount}}",
+      "summary_other": "{{count}} records differ; money in/out changes by {{amount}}",
+      "record": "Record",
+      "date": "Date",
+      "now": "Now",
+      "inFile": "In the file",
+      "change": {
+        "added": "new",
+        "removed": "removed",
+        "changed": "changed"
+      },
+      "textOnly_one": "{{count}} other record differs only in notes or file paths — no figure changes",
+      "textOnly_other": "{{count}} other records differ only in notes or file paths — no figure changes",
+      "valuesChanged": "Month-end values up to {{date}} changed since you last confirmed",
+      "reviewer": "Confirmed by",
+      "evidence": "Why (statement or reference)",
+      "apply": "Use the corrected records",
+      "fillBoth": "Fill in both fields to continue.",
+      "modalSub": "Locked months · up to {{date}}",
+      "confirm": "Replace the locked records up to {{date}} with the file's records and recalculate Returns?",
+      "confirmCount_one": "{{count}} record replaced · money in/out {{amount}}",
+      "confirmCount_other": "{{count}} records replaced · money in/out {{amount}}",
+      "confirmBy": "Confirmed by {{name}} · {{reason}}",
+      "archived": "The old records are archived.",
+      "replace": "Replace and recalculate",
+      "done": "Done. Locked records up to {{date}} replaced; Returns recalculated.",
+      "applyFailed": "Couldn't replace the locked records. The server said:",
+      "compareFailed": "Couldn't compare with the uploaded file. The server said:",
+      "unavailable": {
+        "no_frozen_history": "No months are locked yet.",
+        "workbook_missing": "funding_transactions.xlsx has not been uploaded.",
+        "twr_tabs_missing": "funding_transactions.xlsx has no TWR外部现金流 tab."
+      }
+    }
+  }
+}
